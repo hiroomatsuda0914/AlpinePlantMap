@@ -1,7 +1,7 @@
 class Env {
-  static const mapboxAccessToken = String.fromEnvironment('MapboxAccessToken');
-  static const supabaseUrl = String.fromEnvironment('SupabaseUrl');
-  static const supabaseAnonKey = String.fromEnvironment('SupabaseAnonKey');
+  static const mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
+  static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
   static void ensureConfigured(){
     const required = {

@@ -11,9 +11,43 @@ AIはユーザーに対して、実装方針の提案、設計のアドバイス
 
 # 技術スタック
 - フロントエンド: Flutter (Dart)
+- 状態管理・アーキテクチャ: MVVM（Riverpod + Notifier）※段階的に適用（下記）
 - デザインシステム: Material Design Components (Material 3)
-- 地図エンジン: Mapbox (`mapbox_maps_flutter`)
+- 地図エンジン: Mapbox（モバイル: `mapbox_maps_flutter` / Web: `flutter_map` + Mapbox タイル）
 - バックエンド・DB・ストレージ: Supabase (PostgreSQL + PostGIS拡張 / Supabase Storage)
+- 環境変数: `--dart-define-from-file` + `String.fromEnvironment`（`.env` は Git に含めない）
+
+# アーキテクチャ方針（MVVM + Riverpod）
+
+勉強を兼ねて **MVVM（Riverpod + Notifier）** で進める。ただし **一気に全面適用せず、機能単位で段階的に導入** する。
+
+## レイヤー分担
+| 層 | 役割 | 例 |
+|----|------|-----|
+| **View** | `Widget`。表示とユーザー操作のみ | `MapScreen`, フィルタパネル |
+| **Notifier** | 状態と操作への反応（ViewModel 相当） | `FilterNotifier`, `MapNotifier` |
+| **Repository** | Supabase・地図データの取得・保存 | `PostRepository` |
+| **Model** | 不変データクラス | `Post`, `FilterState` |
+
+## コーディングルール
+- View から Repository を **直接呼ばない**（Notifier 経由）
+- 非同期データは `AsyncNotifier` / `AsyncValue` を検討
+- 地図 Widget（Mapbox / flutter_map）のプラットフォーム差は **View 層** に閉じ込める（`web_map_screen` / `mobile_map_screen`）
+- 地図の細かい描画ロジックを Notifier に詰め込みすぎない（Notifier はフィルタ・ピン一覧・選択状態など）
+
+## フォルダ構成（目安）
+```
+lib/features/<機能名>/
+  presentation/   # View, Notifier
+  domain/         # Model（後から）
+  data/           # Repository（後から）
+```
+
+## 導入の優先順位（予定）
+1. 地図表示（現状のまま）
+2. フィルタ → `FilterNotifier`
+3. 投稿ダイアログ → 専用 Notifier
+4. Supabase 連携 → Repository + `AsyncNotifier`
 
 # 機能仕様
 
