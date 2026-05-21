@@ -6,6 +6,7 @@ enum IconCategory {
   plant,
   mushroom,
   mountain,
+  hut,
   other,
 }
 
