@@ -25,3 +25,44 @@ class _IconSpec {
   IconCategory.hut:      _IconSpec(label: '山小屋',    statuses: ['有人', '無人']),
   IconCategory.other:    _IconSpec(label: 'その他'),
   };
+
+
+  // ── メインシート ──────────────────────────────────────────────────────────
+
+class PostCreationSheet extends ConsumerStatefulWidget {
+  const PostCreationSheet({super.key});
+  @override
+  ConsumerState<PostCreationSheet> createState() => _PostCreationSheetState();
+}
+
+class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
+  int _step = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final draft = ref.watch(postDraftProvider);
+
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.75,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color:context.Theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: Column (
+            children: [
+              Container(
+                ,)
+            ],)
+      }
+
+          ],
+        ),
+      ),
+    );
+  }

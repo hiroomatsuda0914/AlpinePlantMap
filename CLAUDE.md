@@ -25,13 +25,31 @@
 
 #### ▶ 今すぐやること: `post_creation_sheet.dart` を完成させる
 - ファイル: `lib/features/map/presentation/post_creation_sheet.dart`
-- 状況: 実装途中（全体構造・アイコン仕様データ・メインシートは記述済み）
-- 残り: `_Step1Photo` / `_Step2Icon` / `_Step3Tags` / `_Step4Confirm` の各ウィジェット実装
-- 完成後: `map_screen.dart` に FAB を追加 → `showModalBottomSheet` で呼び出せば動作確認できる
+- 状況: `_IconSpec` クラスと `_iconSpecs` データのみ記述済み（27行）。それ以降は未実装
+- コード例: 直前のセッション（2026-05-22）でチャット上に完全なコード例を提示済み
+  - `PostCreationSheet`（DraggableScrollableSheet + 4ステップナビゲーション）
+  - `_Step1Photo`（写真選択 + EXIF GPS 表示）
+  - `_Step2Icon`（カテゴリグリッド + 状態/色チップ + 群落トグル）
+  - `_Step3Tags`（植物タグ・場所タグ入力）
+  - `_Step4Confirm`（確認サマリー + 投稿ボタン ※submitPost は TODO）
+  - `_InfoRow` / `_TagInput` / `_ConfirmRow` ヘルパーウィジェット
+- 完成後: `web_map_screen.dart` または `mobile_map_screen.dart` の Scaffold に FAB を追加
+  ```dart
+  floatingActionButton: FloatingActionButton(
+    onPressed: () => showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const PostCreationSheet(),
+    ),
+    child: const Icon(Icons.add),
+  ),
+  ```
 
-#### その次: `post_repository.dart` を作る
+#### その次: `post_repository.dart` を充実させる
 - ファイル: `lib/features/map/data/post_repository.dart`
-- 内容: 投稿一覧取得（fetchPosts）+ 画像アップロード + INSERT メソッド
+- 状況: `fetchPosts(FilterState)` のみ実装済み（フィルタ未適用の全件取得）
+- 残り: 画像アップロード（Supabase Storage）+ INSERT メソッド
 - 完成後: `post_creation_notifier.dart` の `submitPost()` を実装して投稿できるようになる
 
 ### その後
@@ -43,16 +61,18 @@
 ## フォルダ構成（現状）
 ```
 lib/features/map/
+  map_screen.dart              ✓（プラットフォーム振り分け）
+  web_map_screen.dart          ✓
+  mobile_map_screen.dart       ✓
   domain/
-    post.dart            ✓
-    filter_state.dart    ✓
-    post_draft.dart      ✓
+    post.dart                  ✓
+    filter_state.dart          ✓
+    post_draft.dart            ✓
   data/
-    post_repository.dart ← 未着手
+    post_repository.dart       △（fetchPosts のみ。upload/INSERT は未実装）
   presentation/
-    map_screen.dart      ✓（既存）
     post_creation_notifier.dart ✓
-    post_creation_sheet.dart    実装途中
+    post_creation_sheet.dart    ← コード例提示済み・写経して追記する
     filter_notifier.dart        ← 後から
 ```
 
