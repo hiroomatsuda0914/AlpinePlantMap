@@ -37,32 +37,168 @@ class PostCreationSheet extends ConsumerStatefulWidget {
 
 class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
   int _step = 0;
-
   @override
   Widget build(BuildContext context) {
-    final draft = ref.watch(postDraftProvider);
-
+    final draft = ref.watch(postCreationProvider);
+    final notifier = ref.read(postCreationProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.75,
       minChildSize: 0.5,
       maxChildSize: 0.95,
-
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color:context.Theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            color: colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(16),
+            ),
           ),
-          child: Column (
+          child: Column(
             children: [
+              const SizedBox(height: 12),
               Container(
-                ,)
-            ],)
-      }
-
-          ],
-        ),
-      ),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: _buildHeader(context),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: _buildStepBody(draft, notifier),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: _buildFooter(context, draft),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+  Widget _buildHeader(BuildContext context) {
+    const titles = ['写真', 'アイコン', 'タグ', '確認'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '新規投稿',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text('Step ${_step + 1} / 4: ${titles[_step]}'),
+      ],
+    );
+  }
+  Widget _buildStepBody(PostDraft draft, PostCreationNotifier notifier) {
+    switch (_step) {
+      case 0:
+        return _Step1Photo(draft: draft, notifier: notifier);
+      case 1:
+        return _Step2Icon(draft: draft, notifier: notifier);
+      case 2:
+        return _Step3Tags(draft: draft, notifier: notifier);
+      case 3:
+        return _Step4Confirm(draft: draft);
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+  Widget _buildFooter(BuildContext context, PostDraft draft) {
+    return Row(
+      children: [
+        if (_step > 0)
+          OutlinedButton(
+            onPressed: () => setState(() => _step--),
+            child: const Text('戻る'),
+          ),
+        const Spacer(),
+        FilledButton(
+          onPressed: _canGoNext(draft)
+              ? () {
+                  if (_step < 3) {
+                    setState(() => _step++);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }
+              : null,
+          child: Text(_step == 3 ? '閉じる' : '次へ'),
+        ),
+      ],
+    );
+  }
+  bool _canGoNext(PostDraft draft) {
+    switch (_step) {
+      case 0:
+        return draft.photoFile != null && draft.hasLocation;
+      case 1:
+        return draft.iconCategory != null &&
+            draft.iconStatus != null &&
+            (draft.iconCategory == IconCategory.hut || draft.iconColor != null);
+      case 2:
+      case 3:
+        return true;
+      default:
+        return false;
+    }
+  }
+}
+
+class _Step1Photo extends StatelessWidget {
+  const _Step1Photo({
+    required this.draft,
+    required this.notifier,
+  });
+  final PostDraft draft;
+  final PostCreationNotifier notifier;
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Step 1: 写真');
+  }
+}
+class _Step2Icon extends StatelessWidget {
+  const _Step2Icon({
+    required this.draft,
+    required this.notifier,
+  });
+  final PostDraft draft;
+  final PostCreationNotifier notifier;
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Step 2: アイコン');
+  }
+}
+class _Step3Tags extends StatelessWidget {
+  const _Step3Tags({
+    required this.draft,
+    required this.notifier,
+  });
+  final PostDraft draft;
+  final PostCreationNotifier notifier;
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Step 3: タグ');
+  }
+}
+class _Step4Confirm extends StatelessWidget {
+  const _Step4Confirm({
+    required this.draft,
+  });
+  final PostDraft draft;
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Step 4: 確認');
+  }
+}
