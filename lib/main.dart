@@ -14,7 +14,11 @@ Future<void> main() async {
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey,
   );
-  runApp(const AlpinePlantMap());
+  runApp(
+    const ProviderScope(
+      child:AlpinePlantMap()
+      ),
+      );
 }
 
 class AlpinePlantMap extends StatelessWidget {

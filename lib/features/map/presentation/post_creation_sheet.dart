@@ -161,13 +161,87 @@ class _Step1Photo extends StatelessWidget {
     required this.draft,
     required this.notifier,
   });
+
   final PostDraft draft;
   final PostCreationNotifier notifier;
+
   @override
   Widget build(BuildContext context) {
-    return const Text('Step 1: 写真');
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '写真を選択すると、EXIFから撮影位置と撮影日時を自動で読み取ります。',
+          style: textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: () async {
+            await notifier.pickPhoto();
+          },
+          icon: const Icon(Icons.photo_library_outlined),
+          label: Text(
+            draft.photoFile == null ? '写真を選択' : '写真を変更',
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (draft.photoFile != null) ...[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.file(
+              draft.photoFile!,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _InfoRow(
+                  label: '緯度',
+                  value: draft.latitude?.toStringAsFixed(6) ?? '未取得',
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(
+                  label: '経度',
+                  value: draft.longitude?.toStringAsFixed(6) ?? '未取得',
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(
+                  label: '撮影日時',
+                  value: draft.shotAt == null
+                      ? '未取得'
+                      : '${draft.shotAt!.year}/${draft.shotAt!.month.toString().padLeft(2, '0')}/${draft.shotAt!.day.toString().padLeft(2, '0')} '
+                          '${draft.shotAt!.hour.toString().padLeft(2, '0')}:${draft.shotAt!.minute.toString().padLeft(2, '0')}',
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (draft.photoFile != null && !draft.hasLocation) ...[
+          const SizedBox(height: 12),
+          Text(
+            '位置情報または撮影日時が含まれていない写真は投稿できません。',
+            style: TextStyle(
+              color: colorScheme.error,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }
+
 class _Step2Icon extends StatelessWidget {
   const _Step2Icon({
     required this.draft,
@@ -200,5 +274,35 @@ class _Step4Confirm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Text('Step 4: 確認');
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.label,
+    required this.value,
+  });
+  final String label;
+  final String value;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 72,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
   }
 }
