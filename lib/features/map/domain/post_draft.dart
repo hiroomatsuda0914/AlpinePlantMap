@@ -1,8 +1,8 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 
 class PostDraft {
-  final File? photoFile;
+  final XFile? photoFile;
   final double? latitude;
   final double? longitude;
   final DateTime? shotAt;
@@ -27,7 +27,7 @@ class PostDraft {
   });
 
   PostDraft copyWith({
-    File? photoFile,
+    XFile? photoFile,
     double? latitude,
     double? longitude,
     DateTime? shotAt,

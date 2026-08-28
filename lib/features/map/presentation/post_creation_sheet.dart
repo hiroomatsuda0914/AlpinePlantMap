@@ -1,10 +1,9 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 import 'package:alpine_plant_map/features/map/domain/post_draft.dart';
 import 'package:alpine_plant_map/features/map/presentation/post_creation_notifier.dart';
-
 
 // ── アイコン仕様データ ──────────────────────────────────────────────────────────
 
@@ -12,22 +11,67 @@ class _IconSpec {
   final String label;
   final List<String> statuses;
   final List<String> colors;
-  const _IconSpec({required this.label, this.statuses = const [], this.colors = const []});}
+  const _IconSpec({
+    required this.label,
+    this.statuses = const [],
+    this.colors = const [],
+  });
+}
 
-  const _iconSpecs = <IconCategory, _IconSpec>{
-  IconCategory.flower:   _IconSpec(label: '花',       statuses: ['つぼみ', '五分咲き', '満開', '散り始め'],            colors: ['カラフル', '白', '赤', 'ピンク', '黄色', 'クリーム色', 'オレンジ', '緑', '青', '紫', '黒']),
-  IconCategory.foliage:  _IconSpec(label: '紅葉・枯れ', statuses: ['紅葉はじまり', '紅葉最盛期', '紅葉終わり', '枯れ・草紅葉'], colors: ['黄色', 'オレンジ', '赤', '茶色', '枯草色']),
-  IconCategory.berry:    _IconSpec(label: '実',        statuses: ['実'],                                           colors: ['カラフル', '白', '赤', 'ピンク', '黄色', 'オレンジ', '緑', '青', '紫', '黒']),
-  IconCategory.snow:     _IconSpec(label: '雪',        statuses: ['雪']),
-  IconCategory.plant:    _IconSpec(label: '植物',      statuses: ['葉っぱ', 'コケ'],                               colors: ['黄緑', '緑', '深緑', '黄色']),
-  IconCategory.mushroom: _IconSpec(label: 'きのこ',    statuses: ['きのこ'],                                       colors: ['カラフル', '白', '赤', 'ピンク', '黄色', 'オレンジ', '茶色']),
-  IconCategory.mountain: _IconSpec(label: '山・景色',  statuses: ['山'],                                           colors: ['緑', '白', '青', '赤・オレンジ']),
-  IconCategory.hut:      _IconSpec(label: '山小屋',    statuses: ['有人', '無人']),
-  IconCategory.other:    _IconSpec(label: 'その他'),
-  };
+const _iconSpecs = <IconCategory, _IconSpec>{
+  IconCategory.flower: _IconSpec(
+    label: '花',
+    statuses: ['つぼみ', '五分咲き', '満開', '散り始め'],
+    colors: [
+      'カラフル',
+      '白',
+      '赤',
+      'ピンク',
+      '黄色',
+      'クリーム色',
+      'オレンジ',
+      '緑',
+      '青',
+      '紫',
+      '黒',
+    ],
+  ),
+  IconCategory.foliage: _IconSpec(
+    label: '紅葉・枯れ',
+    statuses: ['紅葉はじまり', '紅葉最盛期', '紅葉終わり', '枯れ・草紅葉'],
+    colors: ['黄色', 'オレンジ', '赤', '茶色', '枯草色'],
+  ),
+  IconCategory.berry: _IconSpec(
+    label: '実',
+    statuses: ['実'],
+    colors: ['カラフル', '白', '赤', 'ピンク', '黄色', 'オレンジ', '緑', '青', '紫', '黒'],
+  ),
+  IconCategory.snow: _IconSpec(label: '雪', statuses: ['雪']),
+  IconCategory.plant: _IconSpec(
+    label: '植物',
+    statuses: ['葉っぱ', 'コケ'],
+    colors: ['黄緑', '緑', '深緑', '黄色'],
+  ),
+  IconCategory.mushroom: _IconSpec(
+    label: 'きのこ',
+    statuses: ['きのこ'],
+    colors: ['カラフル', '白', '赤', 'ピンク', '黄色', 'オレンジ', '茶色'],
+  ),
+  IconCategory.mountain: _IconSpec(
+    label: '山・景色',
+    statuses: ['山'],
+    colors: ['緑', '白', '青', '赤・オレンジ'],
+  ),
+  IconCategory.hut: _IconSpec(label: '山小屋', statuses: ['有人', '無人']),
+  IconCategory.water: _IconSpec(label: '水場', statuses: ['水あり', '少ない', '枯れ']),
+  IconCategory.trailDamage: _IconSpec(
+    label: '崩落・通行止め',
+    statuses: ['通行可能', '要注意', '通行不可'],
+  ),
+  IconCategory.other: _IconSpec(label: 'その他'),
+};
 
-
-  // ── メインシート ──────────────────────────────────────────────────────────
+// ── メインシート ──────────────────────────────────────────────────────────
 
 class PostCreationSheet extends ConsumerStatefulWidget {
   const PostCreationSheet({super.key});
@@ -51,9 +95,7 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
         return Container(
           decoration: BoxDecoration(
             color: colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Column(
             children: [
@@ -87,20 +129,19 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
       },
     );
   }
+
   Widget _buildHeader(BuildContext context) {
     const titles = ['写真', 'アイコン', 'タグ', '確認'];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '新規投稿',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text('新規投稿', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 8),
         Text('Step ${_step + 1} / 4: ${titles[_step]}'),
       ],
     );
   }
+
   Widget _buildStepBody(PostDraft draft, PostCreationNotifier notifier) {
     switch (_step) {
       case 0:
@@ -115,6 +156,7 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
         return const SizedBox.shrink();
     }
   }
+
   Widget _buildFooter(BuildContext context, PostDraft draft) {
     return Row(
       children: [
@@ -139,14 +181,16 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
       ],
     );
   }
+
   bool _canGoNext(PostDraft draft) {
     switch (_step) {
       case 0:
         return draft.photoFile != null && draft.hasLocation;
       case 1:
+        final spec = _iconSpecs[draft.iconCategory];
         return draft.iconCategory != null &&
             draft.iconStatus != null &&
-            (draft.iconCategory == IconCategory.hut || draft.iconColor != null);
+            (spec == null || spec.colors.isEmpty || draft.iconColor != null);
       case 2:
       case 3:
         return true;
@@ -156,14 +200,33 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
   }
 }
 
-class _Step1Photo extends StatelessWidget {
-  const _Step1Photo({
-    required this.draft,
-    required this.notifier,
-  });
-
+class _Step1Photo extends StatefulWidget {
+  const _Step1Photo({required this.draft, required this.notifier});
   final PostDraft draft;
   final PostCreationNotifier notifier;
+  @override
+  State<_Step1Photo> createState() => _Step1PhotoState();
+}
+
+class _Step1PhotoState extends State<_Step1Photo> {
+  Uint8List? _imageBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.draft.photoFile != null) _loadBytes();
+  }
+
+  @override
+  void didUpdateWidget(_Step1Photo old) {
+    super.didUpdateWidget(old);
+    if (widget.draft.photoFile?.path != old.draft.photoFile?.path) _loadBytes();
+  }
+
+  Future<void> _loadBytes() async {
+    final bytes = await widget.draft.photoFile!.readAsBytes();
+    if (mounted) setState(() => _imageBytes = bytes);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,23 +243,26 @@ class _Step1Photo extends StatelessWidget {
         const SizedBox(height: 16),
         FilledButton.icon(
           onPressed: () async {
-            await notifier.pickPhoto();
+            await widget.notifier.pickPhoto();
           },
           icon: const Icon(Icons.photo_library_outlined),
-          label: Text(
-            draft.photoFile == null ? '写真を選択' : '写真を変更',
-          ),
+          label: Text(widget.draft.photoFile == null ? '写真を選択' : '写真を変更'),
         ),
         const SizedBox(height: 16),
-        if (draft.photoFile != null) ...[
+        if (widget.draft.photoFile != null) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.file(
-              draft.photoFile!,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
+            child: _imageBytes != null
+                ? Image.memory(
+                    _imageBytes!,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  )
+                : const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
           ),
           const SizedBox(height: 16),
         ],
@@ -208,26 +274,26 @@ class _Step1Photo extends StatelessWidget {
               children: [
                 _InfoRow(
                   label: '緯度',
-                  value: draft.latitude?.toStringAsFixed(6) ?? '未取得',
+                  value: widget.draft.latitude?.toStringAsFixed(6) ?? '未取得',
                 ),
                 const SizedBox(height: 8),
                 _InfoRow(
                   label: '経度',
-                  value: draft.longitude?.toStringAsFixed(6) ?? '未取得',
+                  value: widget.draft.longitude?.toStringAsFixed(6) ?? '未取得',
                 ),
                 const SizedBox(height: 8),
                 _InfoRow(
                   label: '撮影日時',
-                  value: draft.shotAt == null
+                  value: widget.draft.shotAt == null
                       ? '未取得'
-                      : '${draft.shotAt!.year}/${draft.shotAt!.month.toString().padLeft(2, '0')}/${draft.shotAt!.day.toString().padLeft(2, '0')} '
-                          '${draft.shotAt!.hour.toString().padLeft(2, '0')}:${draft.shotAt!.minute.toString().padLeft(2, '0')}',
+                      : '${widget.draft.shotAt!.year}/${widget.draft.shotAt!.month.toString().padLeft(2, '0')}/${widget.draft.shotAt!.day.toString().padLeft(2, '0')} '
+                            '${widget.draft.shotAt!.hour.toString().padLeft(2, '0')}:${widget.draft.shotAt!.minute.toString().padLeft(2, '0')}',
                 ),
               ],
             ),
           ),
         ),
-        if (draft.photoFile != null && !draft.hasLocation) ...[
+        if (widget.draft.photoFile != null && !widget.draft.hasLocation) ...[
           const SizedBox(height: 12),
           Text(
             '位置情報または撮影日時が含まれていない写真は投稿できません。',
@@ -243,33 +309,173 @@ class _Step1Photo extends StatelessWidget {
 }
 
 class _Step2Icon extends StatelessWidget {
-  const _Step2Icon({
-    required this.draft,
-    required this.notifier,
-  });
+  const _Step2Icon({required this.draft, required this.notifier});
+  final PostDraft draft;
+  final PostCreationNotifier notifier;
+
+  static const _categoryIcons = <IconCategory, IconData>{
+    IconCategory.flower: Icons.local_florist,
+    IconCategory.foliage: Icons.eco,
+    IconCategory.berry: Icons.grain,
+    IconCategory.snow: Icons.ac_unit,
+    IconCategory.plant: Icons.grass,
+    IconCategory.mushroom: Icons.emoji_nature,
+    IconCategory.mountain: Icons.landscape,
+    IconCategory.hut: Icons.cottage,
+    IconCategory.water: Icons.water_drop,
+    IconCategory.trailDamage: Icons.warning_amber,
+    IconCategory.other: Icons.more_horiz,
+  };
+
+  // 群落トグルを表示するカテゴリ（植物系のみ）
+  static const _colonyCategories = {
+    IconCategory.flower,
+    IconCategory.foliage,
+    IconCategory.berry,
+    IconCategory.snow,
+    IconCategory.plant,
+    IconCategory.mushroom,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final spec = draft.iconCategory == null
+        ? null
+        : _iconSpecs[draft.iconCategory!];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── カテゴリ選択グリッド ──────────────────────────
+        Text('カテゴリ', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 2.8,
+          children: IconCategory.values.map((cat) {
+            return ChoiceChip(
+              selected: draft.iconCategory == cat,
+              avatar: Icon(_categoryIcons[cat], size: 18),
+              label: Text(_iconSpecs[cat]!.label),
+              onSelected: (_) => notifier.selectCategory(cat),
+            );
+          }).toList(),
+        ),
+
+        // ── 状態チップ ────────────────────────────────────
+        if (spec != null && spec.statuses.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Text('状態', style: textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: spec.statuses
+                .map(
+                  (s) => ChoiceChip(
+                    label: Text(s),
+                    selected: draft.iconStatus == s,
+                    onSelected: (_) => notifier.selectStatus(s),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+
+        // ── 色チップ（色ありカテゴリのみ）────────────────
+        if (spec != null && spec.colors.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Text('色', style: textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: spec.colors
+                .map(
+                  (c) => ChoiceChip(
+                    label: Text(c),
+                    selected: draft.iconColor == c,
+                    onSelected: (_) => notifier.selectColor(c),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+
+        // ── 群落トグル（植物系カテゴリのみ）─────────────
+        if (draft.iconCategory != null &&
+            _colonyCategories.contains(draft.iconCategory)) ...[
+          const SizedBox(height: 20),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('群落（まとまって生えている）'),
+            subtitle: const Text('複数株が密集している場合にオン'),
+            value: draft.isColony,
+            onChanged: notifier.setColony,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _Step3Tags extends StatefulWidget {
+  const _Step3Tags({required this.draft, required this.notifier});
   final PostDraft draft;
   final PostCreationNotifier notifier;
   @override
-  Widget build(BuildContext context) {
-    return const Text('Step 2: アイコン');
-  }
+  State<_Step3Tags> createState() => _Step3TagsState();
 }
-class _Step3Tags extends StatelessWidget {
-  const _Step3Tags({
-    required this.draft,
-    required this.notifier,
-  });
-  final PostDraft draft;
-  final PostCreationNotifier notifier;
+
+class _Step3TagsState extends State<_Step3Tags> {
+  final _plantController = TextEditingController();
+  final _locationController = TextEditingController();
+
+  @override
+  void dispose() {
+    _plantController.dispose();
+    _locationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Text('Step 3: タグ');
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ----- 植物名タグ -----
+        Text('植物名タグ', style: textTheme.titleSmall),
+        const SizedBox(height: 4),
+        Text(
+          'カタカナまたは英語で入力（例：ニッコウキスゲ、Edelweiss）',
+          style: textTheme.bodySmall,
+          ),
+        const SizedBox(height: 8),
+        if (widget.draft.plantTags.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: widget.draft.plantTags.map((tag) => Chip(
+              label: Text(tag),
+              onDeleted: () => widget.notifier.removePlantTag(tag),
+              ))
+              .toList(),
+          ),
+        ],
+      ],
+    );
   }
 }
+
 class _Step4Confirm extends StatelessWidget {
-  const _Step4Confirm({
-    required this.draft,
-  });
+  const _Step4Confirm({required this.draft});
   final PostDraft draft;
   @override
   Widget build(BuildContext context) {
@@ -278,10 +484,7 @@ class _Step4Confirm extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
   final String label;
   final String value;
   @override
@@ -290,17 +493,11 @@ class _InfoRow extends StatelessWidget {
       children: [
         SizedBox(
           width: 72,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );

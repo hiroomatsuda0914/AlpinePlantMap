@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:exif/exif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,14 +12,13 @@ class PostCreationNotifier extends Notifier<PostDraft> {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked == null) return false;
 
-    final file = File(picked.path);
-    final tags = await readExifFromBytes(await file.readAsBytes());
+    final tags = await readExifFromBytes(await picked.readAsBytes());
 
     final lat = _parseGps(tags['GPS GPSLatitude'], tags['GPS GPSLatitudeRef']?.printable);
     final lng = _parseGps(tags['GPS GPSLongitude'], tags['GPS GPSLongitudeRef']?.printable);
     final shotAt = _parseShotAt(tags['EXIF DateTimeOriginal']?.printable);
 
-    state = state.copyWith(photoFile: file, latitude: lat, longitude: lng, shotAt: shotAt);
+    state = state.copyWith(photoFile: picked, latitude: lat, longitude: lng, shotAt: shotAt);
     return state.hasLocation;
   }
 

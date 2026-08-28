@@ -7,6 +7,8 @@ enum IconCategory {
   mushroom,
   mountain,
   hut,
+  water,
+  trailDamage,
   other,
 }
 
