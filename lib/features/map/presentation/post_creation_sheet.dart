@@ -443,32 +443,43 @@ class _Step3TagsState extends State<_Step3Tags> {
     super.dispose();
   }
 
+  void _submitPlant() {
+    final tag = _plantController.text.trim();
+    if (tag.isEmpty) return;
+    widget.notifier.addPlantTag(tag);
+    _plantController.clear();
+  }
+
+  void _submitLocation() {
+    final tag = _locationController.text.trim();
+    if (tag.isEmpty) return;
+    widget.notifier.addLocationTag(tag);
+    _locationController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ----- 植物名タグ -----
-        Text('植物名タグ', style: textTheme.titleSmall),
-        const SizedBox(height: 4),
-        Text(
-          'カタカナまたは英語で入力（例：ニッコウキスゲ、Edelweiss）',
-          style: textTheme.bodySmall,
-          ),
-        const SizedBox(height: 8),
-        if (widget.draft.plantTags.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: widget.draft.plantTags.map((tag) => Chip(
-              label: Text(tag),
-              onDeleted: () => widget.notifier.removePlantTag(tag),
-              ))
-              .toList(),
-          ),
-        ],
+        _TagSection(
+          title: '植物名タグ',
+          hint: 'カタカナまたは英語で入力（例：ニッコウキスゲ、Edelweiss）',
+          controller: _plantController,
+          onSubmit: _submitPlant,
+          tags: widget.draft.plantTags,
+          onDelete: widget.notifier.removePlantTag,
+        ),
+        const SizedBox(height: 20),
+        _TagSection(
+          title: '場所タグ',
+          hint: '日本語または英語で入力（例：立山、Tateyama）',
+          controller: _locationController,
+          onSubmit: _submitLocation,
+          tags: widget.draft.locationTags,
+          onDelete: widget.notifier.removeLocationTag,
+        ),
       ],
     );
   }
@@ -480,6 +491,66 @@ class _Step4Confirm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Text('Step 4: 確認');
+  }
+}
+
+class _TagSection extends StatelessWidget {
+  const _TagSection({
+    required this.title,
+    required this.hint,
+    required this.controller,
+    required this.onSubmit,
+    required this.tags,
+    required this.onDelete,
+  });
+  final String title;
+  final String hint;
+  final TextEditingController controller;
+  final VoidCallback onSubmit;
+  final List<String> tags;
+  final void Function(String) onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: textTheme.titleSmall),
+        const SizedBox(height: 4),
+        Text(hint, style: textTheme.bodySmall),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  hintText: 'タグを入力してEnter',
+                  isDense: true,
+                ),
+                onSubmitted: (_) => onSubmit(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(onPressed: onSubmit, child: const Text('追加')),
+          ],
+        ),
+        if (tags.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: tags
+                .map(
+                  (tag) =>
+                      Chip(label: Text(tag), onDeleted: () => onDelete(tag)),
+                )
+                .toList(),
+          ),
+        ],
+      ],
+    );
   }
 }
 
