@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:alpine_plant_map/features/map/presentation/post_creation_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:alpine_plant_map/features/map/presentation/post_creation_sheet.dart';
 import 'mobile_map_screen.dart'
@@ -11,8 +13,10 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: const platform.PlatformMapView(),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Consumer(
+        builder: (context, ref, _) => FloatingActionButton(
         onPressed: () {
+          ref.read(postCreationProvider.notifier).reset();
           showModalBottomSheet<void>(
             context: context,
             isScrollControlled: true,
@@ -21,7 +25,7 @@ class MapScreen extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
-      ),
+      ),),
     );
   }
 }

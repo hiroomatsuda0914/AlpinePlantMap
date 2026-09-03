@@ -19,8 +19,8 @@
 |---|---|---|---|
 | B-0 | `dart:io` の `File` を `XFile` に置き換え（Web対応） | `domain/post_draft.dart`, `presentation/post_creation_sheet.dart`, `presentation/post_creation_notifier.dart` | ✅ |
 | B-1 | `_Step2Icon` 実装（カテゴリグリッド・状態/色チップ・群落トグル） | `presentation/post_creation_sheet.dart` | ✅ |
-| B-2 | `_Step3Tags` 実装（植物タグ・場所タグ入力） | `presentation/post_creation_sheet.dart` | 🔄 |
-| B-3 | `_Step4Confirm` 実装（確認サマリー） | `presentation/post_creation_sheet.dart` | ⬜ |
+| B-2 | `_Step3Tags` 実装（植物タグ・場所タグ入力） | `presentation/post_creation_sheet.dart` | ✅ |
+| B-3 | `_Step4Confirm` 実装（確認サマリー） | `presentation/post_creation_sheet.dart` | ✅ |
 | B-4 | `_canGoNext()` を汎用化（色なしカテゴリ対応） | `presentation/post_creation_sheet.dart` | ✅ |
 
 ---
@@ -29,7 +29,7 @@
 
 | # | タスク | ファイル | 状態 |
 |---|---|---|---|
-| C-1 | FAB を追加してボトムシートを開く | `web_map_screen.dart` | ⬜ |
+| C-1 | FAB を追加してボトムシートを開く | `web_map_screen.dart` | ✅ |
 
 ---
 

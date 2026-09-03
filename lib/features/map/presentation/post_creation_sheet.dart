@@ -485,12 +485,141 @@ class _Step3TagsState extends State<_Step3Tags> {
   }
 }
 
-class _Step4Confirm extends StatelessWidget {
+class _Step4Confirm extends StatefulWidget {
   const _Step4Confirm({required this.draft});
   final PostDraft draft;
   @override
-  Widget build(BuildContext context) {
-    return const Text('Step 4: 確認');
+  State<_Step4Confirm> createState() => _Step4ConfirmState();
+}
+
+class _Step4ConfirmState extends State<_Step4Confirm>{
+  Uint8List? _imageBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.draft.photoFile != null) _loadBytes();
+  }
+  
+  Future<void> _loadBytes() async {
+    final bytes = await widget.draft.photoFile!.readAsBytes();
+    if (mounted) setState(() => _imageBytes = bytes);
+  }
+
+  String get _shotAtText{
+    final dt = widget.draft.shotAt;
+    if (dt == null) return '未取得';
+    return '${dt.year}/${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')} '
+    '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context){
+    final textTheme = Theme.of(context).textTheme;
+    final draft = widget.draft;
+    final spec = draft.iconCategory == null ? null : _iconSpecs[draft.iconCategory!];
+    final showColony = draft.iconCategory != null && _Step2Icon._colonyCategories.contains(draft.iconCategory);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // サムネイル
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: _imageBytes != null
+          ? Image.memory(
+            _imageBytes!,
+            width: double.infinity,
+            height: 160,
+            fit: BoxFit.cover,
+          )
+          : const SizedBox(
+            height: 160,
+            child: Center(child: CircularProgressIndicator()),
+          )
+        ),
+        const SizedBox(height: 20),
+
+        // 撮影情報
+        Text('撮影情報', style: textTheme.titleSmall),
+        const SizedBox(height: 20),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _InfoRow(label: '緯度',
+                value: draft.latitude?.toStringAsFixed(6) ?? '未取得',
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(label: '経度',
+                value: draft.longitude?.toStringAsFixed(6) ?? '未取得',
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(label: '撮影日時', value: _shotAtText),
+              ],
+            ),
+          ),
+        ),
+
+        // アイコン情報
+        Text('アイコン', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _InfoRow(
+                  label: 'カテゴリ',
+                  value: spec?.label ?? '未選択'
+                  ),
+                  const SizedBox(height: 8),
+                  _InfoRow(
+                    label: '状態',
+                    value: draft.iconStatus ?? '未選択',
+                  ),
+                  if (spec != null && spec.colors.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    _InfoRow(label: '色', value: draft.iconColor ?? '未選択'),
+                  ],
+                  if (showColony) ...[
+                    const SizedBox(height: 8),
+                    _InfoRow(label: '群生地', value: draft.isColony ? 'あり' : 'なし'),
+                  ],
+              ],
+            ),
+          ),
+        ),
+
+        // タグ
+        Text('タグ', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _InfoRow(
+                  label: '植物名',
+                  value: draft.plantTags.isEmpty ? 'なし' : draft.plantTags.join('、'),
+                ),
+                const SizedBox(height: 8),
+                _InfoRow(
+                  label: '場所',
+                  value: draft.locationTags.isEmpty ? 'なし' : draft.locationTags.join('、'),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+
+
+    );
   }
 }
 
