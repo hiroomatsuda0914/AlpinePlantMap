@@ -158,6 +158,7 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
   }
 
   Widget _buildFooter(BuildContext context, PostDraft draft) {
+    final notifier = ref.read(postCreationProvider.notifier);
     return Row(
       children: [
         if (_step > 0)
@@ -168,15 +169,16 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
         const Spacer(),
         FilledButton(
           onPressed: _canGoNext(draft)
-              ? () {
+              ? () async {
                   if (_step < 3) {
                     setState(() => _step++);
                   } else {
-                    Navigator.pop(context);
+                    await notifier.submitPost();
+                    if (context.mounted) Navigator.pop(context);
                   }
                 }
               : null,
-          child: Text(_step == 3 ? '閉じる' : '次へ'),
+          child: Text(_step == 3 ? '投稿する' : '次へ'),
         ),
       ],
     );
@@ -492,7 +494,7 @@ class _Step4Confirm extends StatefulWidget {
   State<_Step4Confirm> createState() => _Step4ConfirmState();
 }
 
-class _Step4ConfirmState extends State<_Step4Confirm>{
+class _Step4ConfirmState extends State<_Step4Confirm> {
   Uint8List? _imageBytes;
 
   @override
@@ -500,25 +502,29 @@ class _Step4ConfirmState extends State<_Step4Confirm>{
     super.initState();
     if (widget.draft.photoFile != null) _loadBytes();
   }
-  
+
   Future<void> _loadBytes() async {
     final bytes = await widget.draft.photoFile!.readAsBytes();
     if (mounted) setState(() => _imageBytes = bytes);
   }
 
-  String get _shotAtText{
+  String get _shotAtText {
     final dt = widget.draft.shotAt;
     if (dt == null) return '未取得';
     return '${dt.year}/${dt.month.toString().padLeft(2, '0')}/${dt.day.toString().padLeft(2, '0')} '
-    '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final draft = widget.draft;
-    final spec = draft.iconCategory == null ? null : _iconSpecs[draft.iconCategory!];
-    final showColony = draft.iconCategory != null && _Step2Icon._colonyCategories.contains(draft.iconCategory);
+    final spec = draft.iconCategory == null
+        ? null
+        : _iconSpecs[draft.iconCategory!];
+    final showColony =
+        draft.iconCategory != null &&
+        _Step2Icon._colonyCategories.contains(draft.iconCategory);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,16 +533,16 @@ class _Step4ConfirmState extends State<_Step4Confirm>{
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: _imageBytes != null
-          ? Image.memory(
-            _imageBytes!,
-            width: double.infinity,
-            height: 160,
-            fit: BoxFit.cover,
-          )
-          : const SizedBox(
-            height: 160,
-            child: Center(child: CircularProgressIndicator()),
-          )
+              ? Image.memory(
+                  _imageBytes!,
+                  width: double.infinity,
+                  height: 160,
+                  fit: BoxFit.cover,
+                )
+              : const SizedBox(
+                  height: 160,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
         ),
         const SizedBox(height: 20),
 
@@ -549,12 +555,14 @@ class _Step4ConfirmState extends State<_Step4Confirm>{
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _InfoRow(label: '緯度',
-                value: draft.latitude?.toStringAsFixed(6) ?? '未取得',
+                _InfoRow(
+                  label: '緯度',
+                  value: draft.latitude?.toStringAsFixed(6) ?? '未取得',
                 ),
                 const SizedBox(height: 8),
-                _InfoRow(label: '経度',
-                value: draft.longitude?.toStringAsFixed(6) ?? '未取得',
+                _InfoRow(
+                  label: '経度',
+                  value: draft.longitude?.toStringAsFixed(6) ?? '未取得',
                 ),
                 const SizedBox(height: 8),
                 _InfoRow(label: '撮影日時', value: _shotAtText),
@@ -572,23 +580,17 @@ class _Step4ConfirmState extends State<_Step4Confirm>{
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _InfoRow(
-                  label: 'カテゴリ',
-                  value: spec?.label ?? '未選択'
-                  ),
+                _InfoRow(label: 'カテゴリ', value: spec?.label ?? '未選択'),
+                const SizedBox(height: 8),
+                _InfoRow(label: '状態', value: draft.iconStatus ?? '未選択'),
+                if (spec != null && spec.colors.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  _InfoRow(
-                    label: '状態',
-                    value: draft.iconStatus ?? '未選択',
-                  ),
-                  if (spec != null && spec.colors.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    _InfoRow(label: '色', value: draft.iconColor ?? '未選択'),
-                  ],
-                  if (showColony) ...[
-                    const SizedBox(height: 8),
-                    _InfoRow(label: '群生地', value: draft.isColony ? 'あり' : 'なし'),
-                  ],
+                  _InfoRow(label: '色', value: draft.iconColor ?? '未選択'),
+                ],
+                if (showColony) ...[
+                  const SizedBox(height: 8),
+                  _InfoRow(label: '群生地', value: draft.isColony ? 'あり' : 'なし'),
+                ],
               ],
             ),
           ),
@@ -605,20 +607,22 @@ class _Step4ConfirmState extends State<_Step4Confirm>{
               children: [
                 _InfoRow(
                   label: '植物名',
-                  value: draft.plantTags.isEmpty ? 'なし' : draft.plantTags.join('、'),
+                  value: draft.plantTags.isEmpty
+                      ? 'なし'
+                      : draft.plantTags.join('、'),
                 ),
                 const SizedBox(height: 8),
                 _InfoRow(
                   label: '場所',
-                  value: draft.locationTags.isEmpty ? 'なし' : draft.locationTags.join('、'),
-                  ),
+                  value: draft.locationTags.isEmpty
+                      ? 'なし'
+                      : draft.locationTags.join('、'),
+                ),
               ],
             ),
           ),
         ),
       ],
-
-
     );
   }
 }

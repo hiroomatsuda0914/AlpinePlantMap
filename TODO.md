@@ -37,9 +37,10 @@
 
 | # | タスク | ファイル | 状態 |
 |---|---|---|---|
-| D-1 | 画像を Supabase Storage にアップロード | `data/post_repository.dart` | ⬜ |
-| D-2 | 投稿を DB に INSERT | `data/post_repository.dart` | ⬜ |
-| D-3 | `submitPost()` を実装 | `presentation/post_creation_notifier.dart` | ⬜ |
+| D-1 | 画像を Supabase Storage にアップロード | `data/post_repository.dart` | ✅ |
+| D-2 | 投稿を DB に INSERT | `data/post_repository.dart` | ✅ |
+| D-3 | `submitPost()` を実装 | `presentation/post_creation_notifier.dart` | ✅ |
+| D-4 | 投稿ボタンを `submitPost()` に接続 | `presentation/post_creation_sheet.dart` | ✅ |
 
 ---
 

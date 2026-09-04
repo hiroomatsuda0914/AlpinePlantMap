@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 import 'package:alpine_plant_map/features/map/domain/post_draft.dart';
+import 'package:alpine_plant_map/features/map/data/post_repository.dart';
 
 class PostCreationNotifier extends Notifier<PostDraft> {
   @override
@@ -75,8 +76,29 @@ class PostCreationNotifier extends Notifier<PostDraft> {
     state = const PostDraft();
   }
 
-  // PostRepository 実装後に追加予定
-  // Future<void> submitPost() async { ... }
+  Future<void> submitPost() async {
+    final draft = state;
+    final repo = PostRepository();
+    final photoUrl = await repo.uploadPhoto(draft.photoFile!);
+    final post = Post(
+      id: '',
+      userId: null,
+      latitude: draft.latitude!,
+      longitude: draft.longitude!,
+      shotAt: draft.shotAt!,
+      photoUrl: photoUrl,
+      thumbnailUrl: photoUrl,
+      iconCategory: draft.iconCategory!,
+      iconStatus: draft.iconStatus,
+      iconColor: draft.iconColor ?? '',
+      isColony: draft.isColony,
+      plantTags: draft.plantTags,
+      locationTags: draft.locationTags,
+      createdAt: DateTime.now(),
+    );
+    await repo.insertPost(post);
+  }
+
 
   double? _parseGps(IfdTag? tag, String? ref) {
     if (tag == null || ref == null) return null;

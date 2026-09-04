@@ -22,4 +22,23 @@ class FilterState{
       rangeEnd: today.add(const Duration(days: 15)),
     );
   }
+
+  FilterState copyWith({
+    Set<IconCategory>? selectedCategories,
+    bool? isColonyOnly,
+    Set<int>? selectedYears,
+    DateTime? rangeStart,
+    DateTime? rangeEnd,
+  }) {
+    return FilterState(
+      selectedCategories: selectedCategories ?? this.selectedCategories,
+      isColonyOnly: isColonyOnly ?? this.isColonyOnly,
+      selectedYears: selectedYears ?? this.selectedYears,
+      rangeStart: rangeStart ?? this.rangeStart,
+      rangeEnd: rangeEnd ?? this.rangeEnd,
+    );
+  }
+
+
+
 }
