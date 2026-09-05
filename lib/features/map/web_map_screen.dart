@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:alpine_plant_map/config/env.dart';
+import 'package:alpine_plant_map/features/map/presentation/posts_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PlatformMapView extends StatelessWidget {
+class PlatformMapView extends ConsumerWidget {
   const PlatformMapView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return FlutterMap(
-      options: MapOptions(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final postsAsync = ref.watch(postsProvider);
+    return postsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('エラー：$e')),
+      data: (posts) => FlutterMap(
+        options: MapOptions(
         initialCenter: const LatLng(35.681236, 139.767306),
         initialZoom: 5.5,
       ),
@@ -22,6 +28,14 @@ class PlatformMapView extends StatelessWidget {
           },
           userAgentPackageName: 'com.example.alpine_plant_map',
         ),
+        MarkerLayer(
+          markers: posts.map((post) => Marker(
+            point: LatLng(post.latitude, post.longitude),
+            width: 32,
+            height: 32,
+            child: const Icon(Icons.location_pin, color: Colors.red, size: 32),
+          )).toList(),
+        ),
         RichAttributionWidget(
           alignment: AttributionAlignment.bottomRight,
           attributions: [
@@ -30,6 +44,7 @@ class PlatformMapView extends StatelessWidget {
           ],
         ),
       ],
+      ),
     );
   }
 }

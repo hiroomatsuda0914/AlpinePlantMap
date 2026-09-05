@@ -46,12 +46,11 @@ const Post({
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    final coordinates = (json['location'] as Map<String, dynamic>)['coordinates'] as List;
     return Post(
       id: json['id'] as String,
       userId: json['user_id'] as String?,
-      longitude: (coordinates[0] as num).toDouble(),
-      latitude: (coordinates[1] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      latitude: (json['latitude'] as num).toDouble(),
       shotAt: DateTime.parse(json['shot_at'] as String),
       photoUrl: json['photo_url'] as String,
       thumbnailUrl: json['thumbnail_url'] as String,

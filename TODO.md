@@ -48,10 +48,10 @@
 
 | # | タスク | ファイル | 状態 |
 |---|---|---|---|
-| E-1 | `FilterNotifier` を作成 | `presentation/filter_notifier.dart` | ⬜ |
-| E-2 | `fetchPosts()` にフィルタ条件を適用 | `data/post_repository.dart` | ⬜ |
-| E-3 | 投稿をピン/写真として地図に表示 | `web_map_screen.dart` | ⬜ |
-| E-4 | クラスタリング実装（広域:数字丸 / 中域:代表写真 / 拡大:全表示） | `web_map_screen.dart` | ⬜ |
+| E-1 | `FilterNotifier` を作成 | `presentation/filter_notifier.dart` | ✅ |
+| E-2 | `fetchPosts()` にフィルタ条件を適用 | `data/post_repository.dart` | ✅ |
+| E-3 | 投稿をピン/写真として地図に表示 | `web_map_screen.dart` | ✅ |
+| E-4 | クラスタリング実装（広域:数字丸 / 中域:代表写真 / 拡大:全表示） | `web_map_screen.dart` | ⬜ 優先度低（後回し） |
 
 ---
 
@@ -69,3 +69,4 @@
 | # | 内容 | 優先度 |
 |---|---|---|
 | T-1 | `dart:io` の `File` を `XFile` に置き換え（Webでクラッシュする） | 高（Step B 前に対処） |
+| T-2 | **リリース前に要対応**: `FilterState.defaultState()` の月日範囲をデバッグ用に全期間（1/1〜12/31）にしている。リリース前に「今日の前後15日間」に戻す（`domain/filter_state.dart`） | 高（リリース前） |

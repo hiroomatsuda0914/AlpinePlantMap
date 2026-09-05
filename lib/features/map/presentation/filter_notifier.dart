@@ -17,19 +17,26 @@ class FilterNotifier extends Notifier<FilterState> {
   }
 
   void setColonyOnly(bool value){
+    state = state.copyWith(isColonyOnly: value);
 
   }
 
   void toggleYear(int year){
-
+    final current = Set<int>.from(state.selectedYears);
+    if (current.contains(year)) {
+      current.remove(year);
+    } else {
+      current.add(year);
+    }
+    state = state.copyWith(selectedYears: current);
   }
 
   void setDateRange(DateTime start, DateTime end){
-
+    state = state.copyWith(rangeStart: start, rangeEnd: end);
   }
 
-  void rest() {
-
+  void reset() {
+    state = FilterState.defaultState();
   }
 }
 
