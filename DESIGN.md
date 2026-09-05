@@ -137,29 +137,41 @@ lib/features/<機能名>/
 | `trailDamage` | 崩落・通行止め | 色選択なし。地図上は警告色アイコンを検討 |
 | `other` | その他 | |
 
-## クラウドサービス連携
+## タグ自動取得機能（仕様検討中）
 
-### Google Cloud Vision API — 植物タグ自動認識（実装予定）
+> ⚠️ **実装保留中。** 以下の課題が未解決のため、仕様を固めてから着手する。
 
-投稿時に写真をアップロードすると、AIが植物タグ候補を自動提案する機能。
+### 検討が必要な課題
 
-#### 方針
-- APIキーをクライアントに持たせないため、**Supabase Edge Functions（Deno/TypeScript）** を中継レイヤーとして使用する。
-- Flutterクライアントは Edge Function のエンドポイントを呼び出すだけでよい。
+#### 1. 取得方式の選定
+以下の3つのアプローチを比較・選択する必要がある。
 
-#### データフロー
+| 方式 | 内容 | 費用 | 懸念 |
+|---|---|---|---|
+| AI のみ | Google Cloud Vision API で画像からラベル取得 | 月1,000件まで無料 | 植物名の精度・日本語対応 |
+| API のみ | 緯度経度 → 国土地理院 API で山名取得 | 無料 | 植物名は取れない |
+| ハイブリッド | 画像 → Vision API（植物名）＋ 緯度経度 → リバースジオコーディング（山名） | 無料枠内 | 実装が複雑になる |
+
+#### 2. タグ数・DB 負荷の設計
+- タグは `plant_tags`（text[]）・`location_tags`（text[]）として posts テーブルに保存している。
+- 自動取得でタグが膨大になると、Supabase 無料枠（個人開発）に対して検索・インデックスの負荷が懸念される。
+- **検討ポイント:**
+  - タグ数の上限をアプリ側で制限する（例: plantTags 最大5件）
+  - タグの正規化（別テーブル化）を行うか、配列のまま維持するか
+  - 全文検索インデックス（`GIN`）の必要性
+
+#### 3. 実装場所
+- APIキーをクライアントに持たせない場合 → Supabase Edge Functions（Deno/TypeScript）が必要
+- 国土地理院 API のようにキー不要の公開 API → Flutter クライアントから直接呼び出し可能
+
+### 仮のデータフロー（ハイブリッド案）
 ```
-Flutter（写真選択）
-  → Supabase Edge Function（functions/analyze-plant/）
-    → Google Cloud Vision API（labelDetection）
-      → タグ候補（例: ["コマクサ", "高山植物", "花"]）を返却
+Flutter（写真選択 → 緯度経度・画像を取得）
+  ├─ 画像 → Supabase Edge Function → Cloud Vision API → plantTags 候補
+  └─ 緯度経度 → 国土地理院 API（クライアント直接） → locationTags 候補
   → 投稿ダイアログのタグ入力欄に自動セット（ユーザーが確認・編集して投稿）
 ```
 
-#### 実装スコープ
-- Edge Function: Vision API の `labelDetection` を呼び出し、日本語の植物関連ラベルのみフィルタして返す。
-- Flutter側: 投稿ダイアログで「タグを自動取得」ボタンを追加し、結果を `plantTags` の初期値として設定する。
-- Vision API の無料枠: 月1,000ユニットまで無料（ポートフォリオ用途では十分）。
-
-#### 実装タイミング
-PostRepository・FilterNotifier・地図ピン表示が完了してから着手する。
+### 着手条件
+- 上記3点の仕様を決定してから実装を開始する。
+- TODO.md の Step F を参照。

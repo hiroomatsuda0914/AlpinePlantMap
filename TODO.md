@@ -55,12 +55,55 @@
 
 ---
 
-## Step F — Google Cloud Vision API 連携（最後）
+## Step F — タグ自動取得機能（仕様検討中・後回し）
+
+> ⚠️ **仕様未確定のため実装保留。** `DESIGN.md` の「タグ自動取得機能」セクションを参照。
 
 | # | タスク | ファイル | 状態 |
 |---|---|---|---|
-| F-1 | Supabase Edge Function 作成（`functions/analyze-plant/`） | — | ⬜ |
-| F-2 | Step3 に「タグを自動取得」ボタンを追加 | `presentation/post_creation_sheet.dart` | ⬜ |
+| F-1 | Supabase Edge Function 作成（`functions/analyze-plant/`） | — | ⬜ 仕様確定後に着手 |
+| F-2 | Step3 に「タグを自動取得」ボタンを追加 | `presentation/post_creation_sheet.dart` | ⬜ 仕様確定後に着手 |
+
+---
+
+## Step G — フィルタ UI パネル
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| G-1 | フィルタパネル Widget 作成（折りたたみ可能） | `presentation/filter_panel.dart` | ✅ |
+| G-2 | カテゴリ選択（アイコン種別チェックボックス） | `presentation/filter_panel.dart` | ✅ |
+| G-3 | 群生地のみ表示トグル | `presentation/filter_panel.dart` | ✅ |
+| G-4 | 年フィルタ（FilterChip マルチ選択） | `presentation/filter_panel.dart` | ✅ |
+| G-5 | 月日フィルタ（RangeSlider） | `presentation/filter_panel.dart` | ✅ |
+| G-6 | フィルタパネルを地図画面に組み込む | `web_map_screen.dart` | ✅ |
+
+---
+
+## Step H — 投稿詳細表示
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| H-1 | ピンタップで詳細ダイアログ/シートを表示 | `web_map_screen.dart` | ⬜ |
+| H-2 | 詳細画面の UI 実装（写真・タグ・撮影日等） | `presentation/post_detail_sheet.dart` | ⬜ |
+
+---
+
+## Step I — いいね・お気に入り機能
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| I-1 | いいね機能（ログインユーザーのみ） | `data/post_repository.dart` | ⬜ |
+| I-2 | お気に入りユーザー登録・フィルタ連携 | `data/post_repository.dart` | ⬜ |
+
+---
+
+## Step J — アカウント・認証機能
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| J-1 | Supabase Auth 連携（ログイン/サインアップ） | `presentation/auth_screen.dart` | ⬜ |
+| J-2 | マイデータ絞り込み機能 | `presentation/filter_notifier.dart` | ⬜ |
+| J-3 | 自分の投稿の編集・削除 | `data/post_repository.dart` | ⬜ |
 
 ---
 
