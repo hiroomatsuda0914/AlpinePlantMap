@@ -22,6 +22,8 @@
 | B-2 | `_Step3Tags` 実装（植物タグ・場所タグ入力） | `presentation/post_creation_sheet.dart` | ✅ |
 | B-3 | `_Step4Confirm` 実装（確認サマリー） | `presentation/post_creation_sheet.dart` | ✅ |
 | B-4 | `_canGoNext()` を汎用化（色なしカテゴリ対応） | `presentation/post_creation_sheet.dart` | ✅ |
+| B-5 | 状態選択にアイコンを追加 | `presentation/post_creation_sheet.dart` | ⬜ |
+| B-6 | 色選択をカラーパレットUIに変更 | `presentation/post_creation_sheet.dart` | ⬜ |
 
 ---
 
@@ -52,6 +54,8 @@
 | E-2 | `fetchPosts()` にフィルタ条件を適用 | `data/post_repository.dart` | ✅ |
 | E-3 | 投稿をピン/写真として地図に表示 | `web_map_screen.dart` | ✅ |
 | E-4 | クラスタリング実装（広域:数字丸 / 中域:代表写真 / 拡大:全表示） | `web_map_screen.dart` | ⬜ 優先度低（後回し） |
+| E-5 | 地図ピンを投稿時選択アイコンで表示 | `web_map_screen.dart` | ⬜ |
+| E-6 | 地図表示を写真表示に切り替えられるようにする | `web_map_screen.dart` | ⬜ |
 
 ---
 
@@ -76,6 +80,10 @@
 | G-4 | 年フィルタ（FilterChip マルチ選択） | `presentation/filter_panel.dart` | ✅ |
 | G-5 | 月日フィルタ（RangeSlider） | `presentation/filter_panel.dart` | ✅ |
 | G-6 | フィルタパネルを地図画面に組み込む | `web_map_screen.dart` | ✅ |
+| G-7 | 年・時期フィルタを地図上に常時表示（パネル折りたたみ時も見える） | `presentation/filter_panel.dart`, `web_map_screen.dart` | ⬜ |
+| G-8 | 年を過去20年分に変更 | `presentation/filter_panel.dart` | ⬜ |
+| G-9 | 色・状態・タグによるフィルタ追加 | `presentation/filter_panel.dart`, `presentation/filter_notifier.dart` | ⬜ |
+| G-10 | 「適用」ボタンを追加し、ボタン押下後にフィルタ反映 | `presentation/filter_panel.dart`, `presentation/filter_notifier.dart` | ⬜ |
 
 ---
 
@@ -104,6 +112,15 @@
 | J-1 | Supabase Auth 連携（ログイン/サインアップ） | `presentation/auth_screen.dart` | ⬜ |
 | J-2 | マイデータ絞り込み機能 | `presentation/filter_notifier.dart` | ⬜ |
 | J-3 | 自分の投稿の編集・削除 | `data/post_repository.dart` | ⬜ |
+
+---
+
+## Step K — パフォーマンス改善
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| K-1 | 地図拡大縮小時のフリーズ対策 | `web_map_screen.dart` | ✅ |
+| K-2 | 起動時に地図を先に表示し、Supabaseのデータ取得後にマーカーを追加する（現状はデータ取得完了まで地図が出ない） | `web_map_screen.dart` | ✅ |
 
 ---
 

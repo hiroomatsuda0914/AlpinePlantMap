@@ -7,6 +7,7 @@ import 'package:alpine_plant_map/config/mapbox_bootstrap_mobile.dart'
 import 'package:alpine_plant_map/features/map/map_screen.dart';
 
 Future<void> main() async {
+  FlutterError.onError = (details) => FlutterError.presentError(details);
   WidgetsFlutterBinding.ensureInitialized();
   Env.ensureConfigured();
   configureMapbox(Env.mapboxAccessToken);
