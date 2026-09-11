@@ -112,6 +112,7 @@
 | J-1 | Supabase Auth 連携（ログイン/サインアップ） | `presentation/auth_screen.dart` | ⬜ |
 | J-2 | マイデータ絞り込み機能 | `presentation/filter_notifier.dart` | ⬜ |
 | J-3 | 自分の投稿の編集・削除 | `data/post_repository.dart` | ⬜ |
+| J-4 | モデレーション NG 時のユーザー通知（Step L と連携） | 未定 | ⬜ |
 
 ---
 
@@ -121,6 +122,23 @@
 |---|---|---|---|
 | K-1 | 地図拡大縮小時のフリーズ対策 | `web_map_screen.dart` | ✅ |
 | K-2 | 起動時に地図を先に表示し、Supabaseのデータ取得後にマーカーを追加する（現状はデータ取得完了まで地図が出ない） | `web_map_screen.dart` | ✅ |
+
+---
+
+## Step L — 投稿前コンテンツモデレーション
+
+> 投稿を即時受付（status = pending）し、バックグラウンドで画像チェックを行う。チェック通過後に地図へ公開。
+> ⚠️ **rejected 時のユーザー通知は Step J（アカウント機能）実装時に対応**。ログインユーザー向けの機能として追加する（→ J-4）。
+
+| # | タスク | ファイル | 状態 |
+|---|---|---|---|
+| L-1 | `posts` テーブルに `status` 列を追加（`pending` / `approved` / `rejected`、デフォルト `pending`） | Supabase DB マイグレーション | ⬜ |
+| L-2 | 投稿時に `status = 'pending'` で INSERT するよう変更 | `data/post_repository.dart` | ⬜ |
+| L-3 | 地図・フィルタの取得クエリを `status = 'approved'` のみに絞る | `data/post_repository.dart` | ⬜ |
+| L-4 | モデレーション Edge Function 作成（DB INSERT トリガー → 画像縮小URL取得 → モデレーションAPI呼び出し → status 更新） | `supabase/functions/moderate-post/` | ⬜ |
+| L-5 | 投稿完了後に「投稿しました（公開確認中）」メッセージを表示 | `presentation/post_creation_sheet.dart` | ⬜ |
+| L-6 | Edge Function 失敗時のフォールバック：`pending` のまま一定時間（5分目安）経過した投稿を `approved` に自動昇格 | Supabase DB（pg_cron 等） | ⬜ |
+| L-7 | `rejected` 確定時に Storage の画像を削除し、DB レコードも削除する処理を Edge Function に追加 | `supabase/functions/moderate-post/` | ⬜ |
 
 ---
 
