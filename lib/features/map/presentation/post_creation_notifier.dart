@@ -31,7 +31,7 @@ class PostCreationNotifier extends Notifier<PostDraft> {
       shotAt: state.shotAt,
       iconCategory: category,
       iconStatus: null,
-      iconColor: category == IconCategory.hut ? 'brown' : null,
+      iconColor: null,
       isColony: state.isColony,
       plantTags: state.plantTags,
       locationTags: state.locationTags,
@@ -39,7 +39,18 @@ class PostCreationNotifier extends Notifier<PostDraft> {
   }
 
   void selectStatus(String status) {
-    state = state.copyWith(iconStatus: status);
+    state = PostDraft(
+      photoFile: state.photoFile,
+      latitude: state.latitude,
+      longitude: state.longitude,
+      shotAt: state.shotAt,
+      iconCategory: state.iconCategory,
+      iconStatus: status,
+      iconColor: null, // 状態が変わったら色をリセット
+      isColony: state.isColony,
+      plantTags: state.plantTags,
+      locationTags: state.locationTags,
+    );
   }
 
   void selectColor(String color) {

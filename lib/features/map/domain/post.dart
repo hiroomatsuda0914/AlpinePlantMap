@@ -1,15 +1,26 @@
 enum IconCategory {
-  flower,
-  foliage,
-  berry,
-  snow,
-  plant,
-  mushroom,
-  mountain,
-  hut,
-  water,
-  trailDamage,
-  other,
+  flower,   // 花
+  foliage,  // 紅葉
+  plants,   // 草木
+  scenery,  // 景色
+  hut,      // 山小屋
+  water,    // 水場
+  danger,   // 危険情報
+  other,    // その他
+}
+
+extension IconCategoryX on IconCategory {
+  String get topCategory {
+    switch (this) {
+      case IconCategory.flower:
+      case IconCategory.foliage:
+      case IconCategory.plants:
+      case IconCategory.scenery:
+        return '登山の風景';
+      default:
+        return 'お役立ち';
+    }
+  }
 }
 
 class Post {
@@ -22,13 +33,15 @@ class Post {
   final String thumbnailUrl;
   final IconCategory iconCategory;
   final String? iconStatus;
-  final String iconColor;
+  final String iconColor; // hex code or '' for color-less categories
   final bool isColony;
   final List<String> plantTags;
   final List<String> locationTags;
   final DateTime createdAt;
 
-const Post({
+  String get topCategory => iconCategory.topCategory;
+
+  const Post({
     required this.id,
     this.userId,
     required this.latitude,

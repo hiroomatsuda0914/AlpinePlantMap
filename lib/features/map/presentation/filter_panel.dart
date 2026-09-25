@@ -204,17 +204,14 @@ class _PanelContent extends ConsumerWidget {
 
 String _categoryLabel(IconCategory category) {
   const labels = {
-    IconCategory.flower: '花',
-    IconCategory.foliage: '紅葉・枯れ',
-    IconCategory.berry: '実',
-    IconCategory.snow: '雪',
-    IconCategory.plant: '植物',
-    IconCategory.mushroom: 'きのこ',
-    IconCategory.mountain: '山・景色',
-    IconCategory.hut: '山小屋',
-    IconCategory.water: '水場',
-    IconCategory.trailDamage: '崩落・通行止め',
-    IconCategory.other: 'その他',
+    IconCategory.flower:  '花',
+    IconCategory.foliage: '紅葉',
+    IconCategory.plants:  '草木',
+    IconCategory.scenery: '景色',
+    IconCategory.hut:     '山小屋',
+    IconCategory.water:   '水場',
+    IconCategory.danger:  '危険情報',
+    IconCategory.other:   'その他',
   };
   return labels[category] ?? category.name;
 }
