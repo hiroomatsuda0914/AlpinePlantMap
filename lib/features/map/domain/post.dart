@@ -1,12 +1,14 @@
 enum IconCategory {
-  flower,   // 花
-  foliage,  // 紅葉
-  plants,   // 草木
-  scenery,  // 景色
-  hut,      // 山小屋
-  water,    // 水場
-  danger,   // 危険情報
-  other,    // その他
+  flower,     // 花
+  foliage,    // 紅葉
+  vegetation, // 草木
+  scenery,    // 景色
+  hut,        // 山小屋
+  food,       // 食べ物
+  water,      // 水場
+  danger,     // 危険情報
+  wildlife,   // 野生動物
+  other,      // その他
 }
 
 extension IconCategoryX on IconCategory {
@@ -14,10 +16,15 @@ extension IconCategoryX on IconCategory {
     switch (this) {
       case IconCategory.flower:
       case IconCategory.foliage:
-      case IconCategory.plants:
+      case IconCategory.vegetation:
       case IconCategory.scenery:
-        return '登山の風景';
-      default:
+        return '自然';
+      case IconCategory.hut:
+      case IconCategory.food:
+      case IconCategory.water:
+      case IconCategory.danger:
+      case IconCategory.wildlife:
+      case IconCategory.other:
         return 'お役立ち';
     }
   }

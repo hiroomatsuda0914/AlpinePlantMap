@@ -13,7 +13,39 @@ class FilterNotifier extends Notifier<FilterState> {
     } else {
       current.add(category);
     }
+    // 小項目・色はリセットしない（カテゴリ別に保持）
     state = state.copyWith(selectedCategories: current);
+  }
+
+  /// カテゴリ別に小項目を独立管理する
+  void toggleSubcategory(IconCategory category, String subcategory) {
+    // Map を深くコピー
+    final current = {
+      for (final e in state.selectedSubcategories.entries)
+        e.key: Set<String>.from(e.value),
+    };
+    final subs = current[category] ?? <String>{};
+    if (subs.contains(subcategory)) {
+      subs.remove(subcategory);
+    } else {
+      subs.add(subcategory);
+    }
+    if (subs.isEmpty) {
+      current.remove(category);
+    } else {
+      current[category] = subs;
+    }
+    state = state.copyWith(selectedSubcategories: current);
+  }
+
+  void toggleColor(String hexColor) {
+    final current = Set<String>.from(state.selectedColors);
+    if (current.contains(hexColor)) {
+      current.remove(hexColor);
+    } else {
+      current.add(hexColor);
+    }
+    state = state.copyWith(selectedColors: current);
   }
 
   void setColonyOnly(bool value){

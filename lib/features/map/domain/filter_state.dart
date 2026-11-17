@@ -2,6 +2,8 @@ import 'package:alpine_plant_map/features/map/domain/post.dart';
 
 class FilterState{
   final Set<IconCategory> selectedCategories;
+  final Map<IconCategory, Set<String>> selectedSubcategories; // カテゴリ別 icon_status
+  final Set<String> selectedColors;                          // hex コード
   final bool isColonyOnly;
   final Set<int> selectedYears;
   final DateTime rangeStart;
@@ -9,6 +11,8 @@ class FilterState{
 
   const FilterState({
     this.selectedCategories = const {},
+    this.selectedSubcategories = const {},
+    this.selectedColors = const {},
     this.isColonyOnly = false,
     this.selectedYears = const {},
     required this.rangeStart,
@@ -28,6 +32,8 @@ class FilterState{
 
   FilterState copyWith({
     Set<IconCategory>? selectedCategories,
+    Map<IconCategory, Set<String>>? selectedSubcategories,
+    Set<String>? selectedColors,
     bool? isColonyOnly,
     Set<int>? selectedYears,
     DateTime? rangeStart,
@@ -35,6 +41,8 @@ class FilterState{
   }) {
     return FilterState(
       selectedCategories: selectedCategories ?? this.selectedCategories,
+      selectedSubcategories: selectedSubcategories ?? this.selectedSubcategories,
+      selectedColors: selectedColors ?? this.selectedColors,
       isColonyOnly: isColonyOnly ?? this.isColonyOnly,
       selectedYears: selectedYears ?? this.selectedYears,
       rangeStart: rangeStart ?? this.rangeStart,

@@ -69,21 +69,20 @@ lib/features/<機能名>/
 
 #### 投稿時の選択項目
 
-1. **アイコン（形状×色）の選択**（大分類を選択後、小分類・色が動的に変化するUI）
+1. **アイコン（大項目×小項目×色）の選択**（大項目を選択後、小項目・色が動的に変化するUI）
 
-   | カテゴリ | 状態 | 色 |
+   | 大項目 | 小項目 | 色 |
    |---|---|---|
-   | 花 | つぼみ／五分咲き／満開／散り始め | カラフル／白／赤／ピンク／黄色／クリーム色／オレンジ／緑／青／紫／黒 |
-   | 紅葉・枯れ | 紅葉はじまり／紅葉最盛期／紅葉終わり／枯れ・草紅葉 | 黄色／オレンジ／赤／茶色／枯草色 |
-   | 実 | 実（1種） | カラフル／白／赤／ピンク／黄色／オレンジ／緑／青／紫／黒 |
-   | 雪 | 雪（1種） | 白固定 |
-   | 植物（新緑・コケ等） | 葉っぱ／コケ | 黄緑／緑／深緑／黄色 |
-   | きのこ | きのこ（1種） | カラフル／白／赤／ピンク／黄色／オレンジ／茶色 |
-   | 山・景色 | 山（1種） | 緑（夏山）／白（雪山）／青（遠景）／赤・オレンジ（朝夕焼け・全山紅葉） |
-   | 山小屋 | 有人／無人 | 色選択なし（`iconColor` は `"brown"` 固定） |
-   | 水場 | 水あり／少ない／枯れ・涸れ | 色選択なし。撮影日時（EXIF）が鮮度として機能する |
-   | 崩落・通行止め | 通行可能／要注意／通行不可 | 色選択なし。地図上は警告色アイコンを検討 |
-   | その他 | — | — |
+   | 花 | つぼみ／五分咲き／満開／散り始め／終り | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 紅葉 | 序盤／8割／最盛期／終り | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 草木 | 草／木／巨木／苔／実 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 景色 | 山／滝／木道／雪原／雲／空／夜空／その他 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 山小屋 | 有人営業／無人利用可／利用不可／その他 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 食べ物 | 山小屋グルメ／自炊／その他 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 水場 | 枯れ／少ない／水あり | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 危険情報 | 崩落／通行不可／通行注意／雪渓 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | 野生動物 | サル／シカ／クマ／イノシシ／カモシカ／ライチョウ／ヘビ／タヌキ／キツネ／その他 | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
+   | その他 | なし | 赤／オレンジ／黄色／緑／水色／青／紫／茶色／白／黒／その他 |
 
 2. **属性チェック**
    - **群生地マーク**: 複数株が密集している場合にオンにするトグル。
@@ -123,19 +122,87 @@ lib/features/<機能名>/
 
 ## IconCategory enum 定義
 
-| enum 値 | 表示名 | 備考 |
+### 大項目（IconCategory）
+
+| enum 値 | 表示名 |
+|---|---|
+| `flower` | 花 |
+| `foliage` | 紅葉 |
+| `vegetation` | 草木 |
+| `scenery` | 景色 |
+| `hut` | 山小屋 |
+| `food` | 食べ物 |
+| `water` | 水場 |
+| `danger` | 危険情報 |
+| `wildlife` | 野生動物 |
+| `other` | その他 |
+
+### 小項目（IconSubcategory）
+
+| 大項目 | enum 値 | 表示名 |
 |---|---|---|
-| `flower` | 花 | |
-| `foliage` | 紅葉・枯れ | |
-| `berry` | 実 | |
-| `snow` | 雪 | |
-| `plant` | 植物 | |
-| `mushroom` | きのこ | |
-| `mountain` | 山・景色 | |
-| `hut` | 山小屋 | `iconColor` は `"brown"` 固定 |
-| `water` | 水場 | 色選択なし |
-| `trailDamage` | 崩落・通行止め | 色選択なし。地図上は警告色アイコンを検討 |
-| `other` | その他 | |
+| flower | `bud` | つぼみ |
+| flower | `halfBloom` | 五分咲き |
+| flower | `fullBloom` | 満開 |
+| flower | `falling` | 散り始め |
+| flower | `end` | 終り |
+| foliage | `early` | 序盤 |
+| foliage | `eighty` | 8割 |
+| foliage | `peak` | 最盛期 |
+| foliage | `end` | 終り |
+| vegetation | `grass` | 草 |
+| vegetation | `tree` | 木 |
+| vegetation | `giantTree` | 巨木 |
+| vegetation | `moss` | 苔 |
+| vegetation | `berry` | 実 |
+| scenery | `mountain` | 山 |
+| scenery | `waterfall` | 滝 |
+| scenery | `boardwalk` | 木道 |
+| scenery | `snowfield` | 雪原 |
+| scenery | `cloud` | 雲 |
+| scenery | `sky` | 空 |
+| scenery | `nightSky` | 夜空 |
+| scenery | `other` | その他 |
+| hut | `staffed` | 有人営業 |
+| hut | `selfService` | 無人利用可 |
+| hut | `closed` | 利用不可 |
+| hut | `other` | その他 |
+| food | `hutFood` | 山小屋グルメ |
+| food | `selfCook` | 自炊 |
+| food | `other` | その他 |
+| water | `dry` | 枯れ |
+| water | `low` | 少ない |
+| water | `available` | 水あり |
+| danger | `collapse` | 崩落 |
+| danger | `closed` | 通行不可 |
+| danger | `caution` | 通行注意 |
+| danger | `snowSlope` | 雪渓 |
+| wildlife | `monkey` | サル |
+| wildlife | `deer` | シカ |
+| wildlife | `bear` | クマ |
+| wildlife | `boar` | イノシシ |
+| wildlife | `serow` | カモシカ |
+| wildlife | `ptarmigan` | ライチョウ |
+| wildlife | `snake` | ヘビ |
+| wildlife | `raccoonDog` | タヌキ |
+| wildlife | `fox` | キツネ |
+| wildlife | `other` | その他 |
+
+### 色（IconColor）
+
+| enum 値 | 表示名 |
+|---|---|
+| `red` | 赤 |
+| `orange` | オレンジ |
+| `yellow` | 黄色 |
+| `green` | 緑 |
+| `lightBlue` | 水色 |
+| `blue` | 青 |
+| `purple` | 紫 |
+| `brown` | 茶色 |
+| `white` | 白 |
+| `black` | 黒 |
+| `other` | その他 |
 
 ## タグ自動取得機能（仕様検討中）
 

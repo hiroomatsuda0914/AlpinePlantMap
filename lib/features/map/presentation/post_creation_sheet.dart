@@ -15,25 +15,17 @@ class _ColorEntry {
 }
 
 const _colorPalette = <_ColorEntry>[
-  _ColorEntry('白',         '#F0F0F0'),
-  _ColorEntry('グレー',     '#8C8C8C'),
-  _ColorEntry('黒',         '#212121'),
-  _ColorEntry('赤',         '#E05353'),
-  _ColorEntry('オレンジ',   '#EE913B'),
-  _ColorEntry('山吹色',     '#E2AA3B'),
-  _ColorEntry('黄色',       '#F2D04F'),
-  _ColorEntry('黄緑',       '#8DBF54'),
-  _ColorEntry('緑',         '#5EB165'),
-  _ColorEntry('深緑',       '#3B8444'),
-  _ColorEntry('水色',       '#2DB0C2'),
-  _ColorEntry('青',         '#3D88D8'),
-  _ColorEntry('紺',         '#2D6CA8'),
-  _ColorEntry('薄紫',       '#AB68C6'),
-  _ColorEntry('紫',         '#6B3293'),
-  _ColorEntry('濃いピンク', '#D13F73'),
-  _ColorEntry('薄いピンク', '#E57399'),
-  _ColorEntry('薄い茶色',   '#AB9289'),
-  _ColorEntry('茶色',       '#5C453E'),
+  _ColorEntry('赤',     '#E05353'),
+  _ColorEntry('オレンジ','#EE913B'),
+  _ColorEntry('黄色',   '#F2D04F'),
+  _ColorEntry('緑',     '#5EB165'),
+  _ColorEntry('水色',   '#2DB0C2'),
+  _ColorEntry('青',     '#3D88D8'),
+  _ColorEntry('紫',     '#6B3293'),
+  _ColorEntry('茶色',   '#5C453E'),
+  _ColorEntry('白',     '#F0F0F0'),
+  _ColorEntry('黒',     '#212121'),
+  _ColorEntry('その他', '#8C8C8C'),
 ];
 
 // ── アイコン仕様データ ─────────────────────────────────────────────────────────
@@ -49,68 +41,42 @@ class _IconSpec {
   });
 }
 
+// 全カテゴリ共通の11色
+const _allColors = <String>{
+  '#E05353', '#EE913B', '#F2D04F', '#5EB165', '#2DB0C2',
+  '#3D88D8', '#6B3293', '#5C453E', '#F0F0F0', '#212121', '#8C8C8C',
+};
+
 const _iconSpecs = <IconCategory, _IconSpec>{
-  IconCategory.flower: _IconSpec(
-    label: '花',
-    statuses: ['つぼみ', '五分咲き', '満開', '散り始め'],
-    availableColors: {
-      '#F0F0F0', '#212121', '#E05353', '#EE913B', '#E2AA3B',
-      '#F2D04F', '#8DBF54', '#5EB165', '#3B8444', '#2DB0C2',
-      '#3D88D8', '#2D6CA8', '#AB68C6', '#6B3293', '#D13F73',
-      '#E57399', '#AB9289', '#5C453E',
-    },
-  ),
-  IconCategory.foliage: _IconSpec(
-    label: '紅葉',
-    statuses: ['序盤', '8割', '最盛期', '終り'],
-    availableColors: {
-      '#E05353', '#EE913B', '#E2AA3B', '#F2D04F', '#8DBF54',
-      '#5EB165', '#3B8444', '#D13F73', '#E57399', '#AB9289', '#5C453E',
-    },
-  ),
-  IconCategory.plants: _IconSpec(
-    label: '草木',
-    statuses: ['草', '木', '巨木', '苔', '実'],
-    availableColors: {
-      '#EE913B', '#E2AA3B', '#F2D04F', '#8DBF54', '#5EB165',
-      '#3B8444', '#3D88D8', '#2D6CA8', '#AB68C6', '#6B3293',
-      '#D13F73', '#E57399', '#AB9289', '#5C453E',
-    },
-  ),
-  IconCategory.scenery: _IconSpec(
-    label: '景色',
-    statuses: ['山', '滝', '木道', '雪原', 'その他'],
-    availableColors: {
-      '#F0F0F0', '#8C8C8C', '#212121', '#E05353', '#EE913B',
-      '#E2AA3B', '#F2D04F', '#8DBF54', '#5EB165', '#3B8444',
-      '#2DB0C2', '#3D88D8', '#2D6CA8', '#AB68C6', '#6B3293',
-      '#D13F73', '#E57399', '#AB9289', '#5C453E',
-    },
-  ),
-  IconCategory.hut:    _IconSpec(label: '山小屋', statuses: ['有人', '無人']),
-  IconCategory.water:  _IconSpec(label: '水場',   statuses: ['枯れ', '少ない', '水あり']),
-  IconCategory.danger: _IconSpec(
-    label: '危険情報',
-    statuses: ['崩落', '通行不可', '通行注意', '野生動物', '雪崩', '雪庇'],
-  ),
-  IconCategory.other:  _IconSpec(label: 'その他'),
+  IconCategory.flower:     _IconSpec(label: '花',       statuses: ['つぼみ', '五分咲き', '満開', '散り始め', '終り'],                                               availableColors: _allColors),
+  IconCategory.foliage:    _IconSpec(label: '紅葉',     statuses: ['序盤', '8割', '最盛期', '終り'],                                                              availableColors: _allColors),
+  IconCategory.vegetation: _IconSpec(label: '草木',     statuses: ['草', '木', '巨木', '苔', '実'],                                                              availableColors: _allColors),
+  IconCategory.scenery:    _IconSpec(label: '景色',     statuses: ['山', '滝', '木道', '雪原', '雲', '空', '夜空', 'その他'],                                      availableColors: _allColors),
+  IconCategory.hut:        _IconSpec(label: '山小屋',   statuses: ['有人営業', '無人利用可', '利用不可', 'その他'],                                                availableColors: _allColors),
+  IconCategory.food:       _IconSpec(label: '食べ物',   statuses: ['山小屋グルメ', '自炊', 'その他'],                                                             availableColors: _allColors),
+  IconCategory.water:      _IconSpec(label: '水場',     statuses: ['枯れ', '少ない', '水あり'],                                                                  availableColors: _allColors),
+  IconCategory.danger:     _IconSpec(label: '危険情報', statuses: ['崩落', '通行不可', '通行注意', '雪渓'],                                                       availableColors: _allColors),
+  IconCategory.wildlife:   _IconSpec(label: '野生動物', statuses: ['サル', 'シカ', 'クマ', 'イノシシ', 'カモシカ', 'ライチョウ', 'ヘビ', 'タヌキ', 'キツネ', 'その他'], availableColors: _allColors),
+  IconCategory.other:      _IconSpec(label: 'その他',   statuses: [],                                                                                           availableColors: _allColors),
 };
 
 const _categoryIcons = <IconCategory, IconData>{
-  IconCategory.flower:  Icons.local_florist,
-  IconCategory.foliage: Icons.eco,
-  IconCategory.plants:  Icons.grass,
-  IconCategory.scenery: Icons.landscape,
-  IconCategory.hut:     Icons.cottage,
-  IconCategory.water:   Icons.water_drop,
-  IconCategory.danger:  Icons.warning_amber,
-  IconCategory.other:   Icons.more_horiz,
+  IconCategory.flower:     Icons.local_florist,
+  IconCategory.foliage:    Icons.eco,
+  IconCategory.vegetation: Icons.grass,
+  IconCategory.scenery:    Icons.landscape,
+  IconCategory.hut:        Icons.cottage,
+  IconCategory.food:       Icons.restaurant,
+  IconCategory.water:      Icons.water_drop,
+  IconCategory.danger:     Icons.warning_amber,
+  IconCategory.wildlife:   Icons.pets,
+  IconCategory.other:      Icons.more_horiz,
 };
 
 const _colonyCategories = {
   IconCategory.flower,
   IconCategory.foliage,
-  IconCategory.plants,
+  IconCategory.vegetation,
 };
 
 Color _hexColor(String hex) => Color(int.parse('0xFF${hex.substring(1)}'));
@@ -231,10 +197,10 @@ class _PostCreationSheetState extends ConsumerState<PostCreationSheet> {
                             _buildStatusColumn(context, draft, notifier, spec),
                           ],
 
-                          // 3列目: 色（状態選択後に表示）
+                          // 3列目: 色（状態選択後 or 小項目なしカテゴリ選択後に表示）
                           if (spec != null &&
                               spec.availableColors.isNotEmpty &&
-                              draft.iconStatus != null) ...[
+                              (draft.iconStatus != null || spec.statuses.isEmpty)) ...[
                             const SizedBox(width: 8),
                             Expanded(
                               child: _buildColorColumn(draft, notifier, spec),

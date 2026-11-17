@@ -8,11 +8,35 @@ class PostRepository {
   Future <List<Post>> fetchPosts(FilterState filter) async {
     var query = _client.from('posts_view').select();
 
+    // カテゴリ × 小項目の OR 条件
+    // 例: (花 AND つぼみ) OR (花 AND 満開) OR (紅葉) OR (景色 AND 山)
     if (filter.selectedCategories.isNotEmpty) {
+      final orParts = <String>[];
+      for (final cat in filter.selectedCategories) {
+        final subs = filter.selectedSubcategories[cat];
+        if (subs == null || subs.isEmpty) {
+          // 小項目未選択 → カテゴリ全体にマッチ
+          orParts.add('icon_category.eq.${cat.name}');
+        } else {
+          // 小項目選択あり → (カテゴリ AND 小項目) ごとに条件追加
+          for (final sub in subs) {
+            orParts.add('and(icon_category.eq.${cat.name},icon_status.eq.$sub)');
+          }
+        }
+      }
+      if (orParts.length == 1 && !orParts.first.startsWith('and(')) {
+        // 単純な1カテゴリ指定
+        query = query.eq('icon_category', filter.selectedCategories.first.name);
+      } else {
+        query = query.or(orParts.join(','));
+      }
+    }
+
+    if (filter.selectedColors.isNotEmpty) {
       query = query.inFilter(
-        'icon_category',
-        filter.selectedCategories.map((c) => c.name).toList(),
-        );
+        'icon_color',
+        filter.selectedColors.toList(),
+      );
     }
 
     if (filter.isColonyOnly) {
