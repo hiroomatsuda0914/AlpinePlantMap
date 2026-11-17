@@ -44,8 +44,7 @@ class PostRepository {
     }
 
     final rows = await query;
-    print('fetchPost: ${rows.length} 件、内容：$rows');
-    var posts = rows.map((row) => Post.fromJson(row)).toList();
+var posts = rows.map((row) => Post.fromJson(row)).toList();
 
     if (filter.selectedYears.isNotEmpty) {
       posts = posts.where((p) => filter.selectedYears.contains(p.shotAt.year)).toList();

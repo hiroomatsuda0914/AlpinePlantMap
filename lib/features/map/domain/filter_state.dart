@@ -20,13 +20,12 @@ class FilterState{
   });
 
   factory FilterState.defaultState() {
-    final today = DateTime.now();
     return FilterState(
       // デバッグ中は全期間で出す
       rangeStart: DateTime(2000, 1, 1),
       rangeEnd: DateTime(2000, 12, 31),
-      // rangeStart: today.subtract(const Duration(days: 15)),
-      // rangeEnd: today.add(const Duration(days: 15)),
+      // rangeStart: DateTime.now().subtract(const Duration(days: 15)),
+      // rangeEnd: DateTime.now().add(const Duration(days: 15)),
     );
   }
 

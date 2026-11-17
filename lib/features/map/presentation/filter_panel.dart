@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alpine_plant_map/features/map/presentation/filter_notifier.dart';
 import 'package:alpine_plant_map/features/map/domain/post.dart';
+import 'package:alpine_plant_map/features/map/domain/filter_state.dart';
 
 class FilterPanel extends ConsumerStatefulWidget {
   const FilterPanel({super.key});
