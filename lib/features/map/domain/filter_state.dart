@@ -1,16 +1,16 @@
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 
-class FilterState{
-  final Set<IconCategory> selectedCategories;
-  final Map<IconCategory, Set<String>> selectedSubcategories; // カテゴリ別 icon_status
-  final Set<String> selectedColors;                          // hex コード
+class FilterState {
+  final IconCategory? selectedCategory;
+  final Map<IconCategory, Set<String>> selectedSubcategories;
+  final Set<String> selectedColors;
   final bool isColonyOnly;
   final Set<int> selectedYears;
   final DateTime rangeStart;
   final DateTime rangeEnd;
 
   const FilterState({
-    this.selectedCategories = const {},
+    this.selectedCategory,
     this.selectedSubcategories = const {},
     this.selectedColors = const {},
     this.isColonyOnly = false,
@@ -21,16 +21,14 @@ class FilterState{
 
   factory FilterState.defaultState() {
     return FilterState(
-      // デバッグ中は全期間で出す
       rangeStart: DateTime(2000, 1, 1),
       rangeEnd: DateTime(2000, 12, 31),
-      // rangeStart: DateTime.now().subtract(const Duration(days: 15)),
-      // rangeEnd: DateTime.now().add(const Duration(days: 15)),
     );
   }
 
   FilterState copyWith({
-    Set<IconCategory>? selectedCategories,
+    IconCategory? selectedCategory,
+    bool clearCategory = false,
     Map<IconCategory, Set<String>>? selectedSubcategories,
     Set<String>? selectedColors,
     bool? isColonyOnly,
@@ -39,7 +37,7 @@ class FilterState{
     DateTime? rangeEnd,
   }) {
     return FilterState(
-      selectedCategories: selectedCategories ?? this.selectedCategories,
+      selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
       selectedSubcategories: selectedSubcategories ?? this.selectedSubcategories,
       selectedColors: selectedColors ?? this.selectedColors,
       isColonyOnly: isColonyOnly ?? this.isColonyOnly,
@@ -48,7 +46,4 @@ class FilterState{
       rangeEnd: rangeEnd ?? this.rangeEnd,
     );
   }
-
-
-
 }

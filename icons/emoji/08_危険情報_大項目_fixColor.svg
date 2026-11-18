@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 危険情報 大項目 - 絵文字スタイル -->
+  <!-- 角丸三角形 + ビックリマーク -->
+
+  <!-- 角丸三角形 (stroke-linejoin="round" で角を丸める) -->
+  <polygon points="16,3 29,28 3,28"
+           fill="#FFC107"
+           stroke="#FFC107"
+           stroke-width="6"
+           stroke-linejoin="round"/>
+
+  <!-- ! マーク -->
+  <!-- 縦棒 (角丸rect) -->
+  <rect x="14.5" y="11" width="3" height="10" rx="1.5" fill="#5D2E0C"/>
+  <!-- ドット -->
+  <circle cx="16" cy="25" r="2" fill="#5D2E0C"/>
+</svg>

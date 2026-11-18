@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 野生動物 クマ - ドット絵スタイル -->
+
+  <!-- 耳 (外) -->
+  <rect x="4"  y="2"  width="8"  height="8"  fill="#795548"/>
+  <rect x="20" y="2"  width="8"  height="8"  fill="#795548"/>
+  <!-- 耳 (内) -->
+  <rect x="6"  y="4"  width="4"  height="4"  fill="#D4A453"/>
+  <rect x="22" y="4"  width="4"  height="4"  fill="#D4A453"/>
+
+  <!-- 頭 -->
+  <rect x="4"  y="8"  width="24" height="22" fill="#795548"/>
+
+  <!-- 目 -->
+  <rect x="8"  y="13" width="5"  height="5"  fill="#2E1503"/>
+  <rect x="19" y="13" width="5"  height="5"  fill="#2E1503"/>
+  <!-- 目の光沢 -->
+  <rect x="9"  y="14" width="2"  height="2"  fill="white"/>
+  <rect x="20" y="14" width="2"  height="2"  fill="white"/>
+
+  <!-- 鼻まわり (明るめの茶) -->
+  <rect x="10" y="18" width="12" height="10" fill="#A0744E"/>
+  <!-- 鼻 -->
+  <rect x="13" y="18" width="6"  height="4"  fill="#2E1503"/>
+  <!-- 口 (左右の角) -->
+  <rect x="11" y="25" width="4"  height="2"  fill="#2E1503"/>
+  <rect x="17" y="25" width="4"  height="2"  fill="#2E1503"/>
+</svg>

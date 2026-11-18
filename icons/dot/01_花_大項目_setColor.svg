@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 花 大項目 - ドット絵スタイル (16×16グリッド, 2px/cell) -->
+  <!-- currentColor = 投稿色 (flutter_svg colorFilter で差し替え) -->
+
+  <!-- 上ペタル -->
+  <rect x="12" y="2"  width="8"  height="10" fill="currentColor"/>
+  <!-- 左ペタル -->
+  <rect x="2"  y="12" width="10" height="8"  fill="currentColor"/>
+  <!-- 右ペタル -->
+  <rect x="20" y="12" width="10" height="8"  fill="currentColor"/>
+  <!-- 下ペタル -->
+  <rect x="12" y="20" width="8"  height="10" fill="currentColor"/>
+  <!-- 中心 (黄色) -->
+  <rect x="12" y="12" width="8"  height="8"  fill="#FFD700"/>
+  <!-- 中心ドット (オレンジ) -->
+  <rect x="14" y="14" width="4"  height="4"  fill="#FF8C00"/>
+</svg>

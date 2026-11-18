@@ -51,12 +51,12 @@ const _iconSpecs = <IconCategory, _IconSpec>{
   IconCategory.flower:     _IconSpec(label: '花',       statuses: ['つぼみ', '五分咲き', '満開', '散り始め', '終り'],                                               availableColors: _allColors),
   IconCategory.foliage:    _IconSpec(label: '紅葉',     statuses: ['序盤', '8割', '最盛期', '終り'],                                                              availableColors: _allColors),
   IconCategory.vegetation: _IconSpec(label: '草木',     statuses: ['草', '木', '巨木', '苔', '実'],                                                              availableColors: _allColors),
-  IconCategory.scenery:    _IconSpec(label: '景色',     statuses: ['山', '滝', '木道', '雪原', '雲', '空', '夜空', 'その他'],                                      availableColors: _allColors),
+  IconCategory.scenery:    _IconSpec(label: '景色',     statuses: ['山', '滝', '川', '池・湖', '橋', '木道', '雪原', '雲', '空', '夜空', 'その他'],              availableColors: _allColors),
   IconCategory.hut:        _IconSpec(label: '山小屋',   statuses: ['有人営業', '無人利用可', '利用不可', 'その他'],                                                availableColors: _allColors),
   IconCategory.food:       _IconSpec(label: '食べ物',   statuses: ['山小屋グルメ', '自炊', 'その他'],                                                             availableColors: _allColors),
   IconCategory.water:      _IconSpec(label: '水場',     statuses: ['枯れ', '少ない', '水あり'],                                                                  availableColors: _allColors),
   IconCategory.danger:     _IconSpec(label: '危険情報', statuses: ['崩落', '通行不可', '通行注意', '雪渓'],                                                       availableColors: _allColors),
-  IconCategory.wildlife:   _IconSpec(label: '野生動物', statuses: ['サル', 'シカ', 'クマ', 'イノシシ', 'カモシカ', 'ライチョウ', 'ヘビ', 'タヌキ', 'キツネ', 'その他'], availableColors: _allColors),
+  IconCategory.wildlife:   _IconSpec(label: '野生動物', statuses: ['サル', 'シカ', 'クマ', 'イノシシ', 'カモシカ', 'ライチョウ', 'オコジョ', 'ヘビ', 'タヌキ', 'キツネ', 'その他'], availableColors: _allColors),
   IconCategory.other:      _IconSpec(label: 'その他',   statuses: [],                                                                                           availableColors: _allColors),
 };
 

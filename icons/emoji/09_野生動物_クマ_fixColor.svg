@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 野生動物 クマ - 絵文字スタイル -->
+
+  <!-- 耳 (外) -->
+  <circle cx="8"  cy="8"  r="5"   fill="#795548"/>
+  <circle cx="24" cy="8"  r="5"   fill="#795548"/>
+  <!-- 耳 (内) -->
+  <circle cx="8"  cy="8"  r="3"   fill="#D4A453"/>
+  <circle cx="24" cy="8"  r="3"   fill="#D4A453"/>
+
+  <!-- 頭 -->
+  <circle cx="16" cy="17" r="12"  fill="#795548"/>
+
+  <!-- 鼻まわり -->
+  <ellipse cx="16" cy="22" rx="6" ry="4.5" fill="#A0744E"/>
+
+  <!-- 目 -->
+  <circle cx="11" cy="14" r="2.5" fill="#2E1503"/>
+  <circle cx="10.2" cy="13.3" r="0.8" fill="white"/>
+  <circle cx="21" cy="14" r="2.5" fill="#2E1503"/>
+  <circle cx="20.2" cy="13.3" r="0.8" fill="white"/>
+
+  <!-- 鼻 -->
+  <ellipse cx="16" cy="20" rx="3" ry="2" fill="#2E1503"/>
+
+  <!-- 口 -->
+  <path d="M13 23 Q16 25.5 19 23"
+        fill="none" stroke="#2E1503" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

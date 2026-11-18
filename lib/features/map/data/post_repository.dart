@@ -2,41 +2,45 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 import 'package:alpine_plant_map/features/map/domain/filter_state.dart';
 import 'package:image_picker/image_picker.dart';
+
+// 色選択をサポートするカテゴリ
+const _colorSupportedCategories = {
+  IconCategory.flower,
+  IconCategory.foliage,
+  IconCategory.vegetation,
+  IconCategory.scenery,
+};
+
 class PostRepository {
   final _client = Supabase.instance.client;
 
-  Future <List<Post>> fetchPosts(FilterState filter) async {
+  Future<List<Post>> fetchPosts(FilterState filter) async {
     var query = _client.from('posts_view').select();
 
-    // カテゴリ × 小項目の OR 条件
-    // 例: (花 AND つぼみ) OR (花 AND 満開) OR (紅葉) OR (景色 AND 山)
-    if (filter.selectedCategories.isNotEmpty) {
-      final orParts = <String>[];
-      for (final cat in filter.selectedCategories) {
-        final subs = filter.selectedSubcategories[cat];
-        if (subs == null || subs.isEmpty) {
-          // 小項目未選択 → カテゴリ全体にマッチ
-          orParts.add('icon_category.eq.${cat.name}');
-        } else {
-          // 小項目選択あり → (カテゴリ AND 小項目) ごとに条件追加
-          for (final sub in subs) {
-            orParts.add('and(icon_category.eq.${cat.name},icon_status.eq.$sub)');
-          }
-        }
-      }
-      if (orParts.length == 1 && !orParts.first.startsWith('and(')) {
-        // 単純な1カテゴリ指定
-        query = query.eq('icon_category', filter.selectedCategories.first.name);
-      } else {
-        query = query.or(orParts.join(','));
-      }
-    }
+    // 大項目（単一選択）
+    if (filter.selectedCategory != null) {
+      final cat = filter.selectedCategory!;
+      final subs = filter.selectedSubcategories[cat];
 
-    if (filter.selectedColors.isNotEmpty) {
-      query = query.inFilter(
-        'icon_color',
-        filter.selectedColors.toList(),
-      );
+      if (subs == null || subs.isEmpty) {
+        query = query.eq('icon_category', cat.name);
+      } else if (subs.length == 1) {
+        query = query
+            .eq('icon_category', cat.name)
+            .eq('icon_status', subs.first);
+      } else {
+        // 複数小項目は OR で展開
+        final orParts = subs
+            .map((s) => 'and(icon_category.eq.${cat.name},icon_status.eq.$s)')
+            .join(',');
+        query = query.or(orParts);
+      }
+
+      // 色フィルタは色対応カテゴリのみ適用
+      if (filter.selectedColors.isNotEmpty &&
+          _colorSupportedCategories.contains(cat)) {
+        query = query.inFilter('icon_color', filter.selectedColors.toList());
+      }
     }
 
     if (filter.isColonyOnly) {
@@ -44,24 +48,27 @@ class PostRepository {
     }
 
     final rows = await query;
-var posts = rows.map((row) => Post.fromJson(row)).toList();
+    var posts = rows.map((row) => Post.fromJson(row)).toList();
 
     if (filter.selectedYears.isNotEmpty) {
-      posts = posts.where((p) => filter.selectedYears.contains(p.shotAt.year)).toList();
+      posts = posts
+          .where((p) => filter.selectedYears.contains(p.shotAt.year))
+          .toList();
     }
 
-    posts = posts.where((p) => _inMmDdRange(p.shotAt, filter.rangeStart, filter.rangeEnd)).toList();
+    posts = posts
+        .where((p) => _inMmDdRange(p.shotAt, filter.rangeStart, filter.rangeEnd))
+        .toList();
 
     return posts;
-
   }
 
   Future<String> uploadPhoto(XFile photo) async {
-  final bytes = await photo.readAsBytes();
-  final ext = photo.name.split('.').last.toLowerCase();
-  final path = '${DateTime.now().millisecondsSinceEpoch}.$ext';
-  await _client.storage.from('post-photos').uploadBinary(path, bytes);
-  return _client.storage.from('podt-photos').getPublicUrl(path);
+    final bytes = await photo.readAsBytes();
+    final ext = photo.name.split('.').last.toLowerCase();
+    final path = '${DateTime.now().millisecondsSinceEpoch}.$ext';
+    await _client.storage.from('post-photos').uploadBinary(path, bytes);
+    return _client.storage.from('post-photos').getPublicUrl(path);
   }
 
   Future<void> insertPost(Post post) async {
@@ -72,16 +79,10 @@ var posts = rows.map((row) => Post.fromJson(row)).toList();
     final mmdd = shotAt.month * 100 + shotAt.day;
     final start = rangeStart.month * 100 + rangeStart.day;
     final end = rangeEnd.month * 100 + rangeEnd.day;
-    if (start <= end){
+    if (start <= end) {
       return mmdd >= start && mmdd <= end;
     } else {
       return mmdd >= start || mmdd <= end;
     }
   }
-
-
-
-
-
 }
-

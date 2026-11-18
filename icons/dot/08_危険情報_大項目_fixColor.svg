@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 危険情報 大項目 - ドット絵スタイル -->
+  <!-- 階段状の警告三角形 + ビックリマーク -->
+
+  <!-- 三角形 (ピクセル階段) -->
+  <rect x="14" y="2"  width="4"  height="2"  fill="#FF8C00"/>
+  <rect x="12" y="4"  width="8"  height="2"  fill="#FF8C00"/>
+  <rect x="10" y="6"  width="12" height="2"  fill="#FF8C00"/>
+  <rect x="8"  y="8"  width="16" height="2"  fill="#FF8C00"/>
+  <rect x="6"  y="10" width="20" height="2"  fill="#FF8C00"/>
+  <!-- 本体 -->
+  <rect x="4"  y="12" width="24" height="16" fill="#FF8C00"/>
+  <!-- 底辺の角丸ぽい処理 -->
+  <rect x="6"  y="28" width="20" height="2"  fill="#FF8C00"/>
+
+  <!-- ! マーク (濃い茶色) -->
+  <!-- 縦棒 -->
+  <rect x="14" y="14" width="4"  height="8"  fill="#5D2E0C"/>
+  <!-- ドット -->
+  <rect x="14" y="24" width="4"  height="4"  fill="#5D2E0C"/>
+</svg>

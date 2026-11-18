@@ -7,19 +7,14 @@ class FilterNotifier extends Notifier<FilterState> {
   FilterState build() => FilterState.defaultState();
 
   void toggleCategory(IconCategory category) {
-    final current = Set<IconCategory>.from(state.selectedCategories);
-    if (current.contains(category)) {
-      current.remove(category);
+    if (state.selectedCategory == category) {
+      state = state.copyWith(clearCategory: true);
     } else {
-      current.add(category);
+      state = state.copyWith(selectedCategory: category);
     }
-    // 小項目・色はリセットしない（カテゴリ別に保持）
-    state = state.copyWith(selectedCategories: current);
   }
 
-  /// カテゴリ別に小項目を独立管理する
   void toggleSubcategory(IconCategory category, String subcategory) {
-    // Map を深くコピー
     final current = {
       for (final e in state.selectedSubcategories.entries)
         e.key: Set<String>.from(e.value),
@@ -48,12 +43,11 @@ class FilterNotifier extends Notifier<FilterState> {
     state = state.copyWith(selectedColors: current);
   }
 
-  void setColonyOnly(bool value){
+  void setColonyOnly(bool value) {
     state = state.copyWith(isColonyOnly: value);
-
   }
 
-  void toggleYear(int year){
+  void toggleYear(int year) {
     final current = Set<int>.from(state.selectedYears);
     if (current.contains(year)) {
       current.remove(year);
@@ -63,7 +57,7 @@ class FilterNotifier extends Notifier<FilterState> {
     state = state.copyWith(selectedYears: current);
   }
 
-  void setDateRange(DateTime start, DateTime end){
+  void setDateRange(DateTime start, DateTime end) {
     state = state.copyWith(rangeStart: start, rangeEnd: end);
   }
 

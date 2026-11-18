@@ -4,6 +4,14 @@ import 'package:alpine_plant_map/features/map/presentation/filter_notifier.dart'
 import 'package:alpine_plant_map/features/map/domain/post.dart';
 import 'package:alpine_plant_map/features/map/domain/filter_state.dart';
 
+// 色選択をサポートするカテゴリ（post_repository.dart と同じセット）
+const _colorSupportedCategories = {
+  IconCategory.flower,
+  IconCategory.foliage,
+  IconCategory.vegetation,
+  IconCategory.scenery,
+};
+
 class FilterPanel extends ConsumerStatefulWidget {
   const FilterPanel({super.key});
 
@@ -75,6 +83,9 @@ class _PanelContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(filterProvider);
     final cs = Theme.of(context).colorScheme;
+    final selectedCat = filter.selectedCategory;
+    final showColor = selectedCat != null &&
+        _colorSupportedCategories.contains(selectedCat);
 
     return Container(
       width: 260,
@@ -111,7 +122,7 @@ class _PanelContent extends ConsumerWidget {
               dense: true,
             ),
 
-            // ── 大項目 ───────────────────────────────────────────────
+            // ── 大項目（単一選択） ────────────────────────────────────
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Align(
@@ -125,7 +136,7 @@ class _PanelContent extends ConsumerWidget {
                 spacing: 4,
                 runSpacing: 4,
                 children: IconCategory.values.map((cat) {
-                  final isSelected = filter.selectedCategories.contains(cat);
+                  final isSelected = filter.selectedCategory == cat;
                   return FilterChip(
                     label: Text(_categoryLabel(cat)),
                     selected: isSelected,
@@ -136,63 +147,93 @@ class _PanelContent extends ConsumerWidget {
               ),
             ),
 
-            // ── 小項目（選択中の大項目ごとにグループ表示） ───────────────
-            ..._buildSubcategorySection(filter, cs, ref),
-
-            // ── 色（常時表示） ────────────────────────────────────────
-            const Divider(),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('色', style: TextStyle(fontWeight: FontWeight.bold)),
+            // ── 小項目（大項目選択後に表示） ──────────────────────────
+            if (selectedCat != null) ...[
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('小項目', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _filterColorPalette.map((c) {
-                  final hex      = c.$1;
-                  final name     = c.$2;
-                  final color    = _hexToColor(hex);
-                  final selected = filter.selectedColors.contains(hex);
-                  return Tooltip(
-                    message: name,
-                    child: GestureDetector(
-                      onTap: () =>
-                          ref.read(filterProvider.notifier).toggleColor(hex),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: selected
-                              ? Border.all(color: Colors.black87, width: 2.5)
-                              : Border.all(
-                                  color: Colors.grey.shade300, width: 1),
-                          boxShadow: selected
-                              ? [const BoxShadow(
-                                  blurRadius: 4,
-                                  color: Colors.black26,
-                                  offset: Offset(0, 2))]
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: (_categoryStatuses[selectedCat] ?? const <String>[])
+                      .map((sub) {
+                    final selected = (filter.selectedSubcategories[selectedCat] ?? {})
+                        .contains(sub);
+                    return FilterChip(
+                      label: Text(sub),
+                      selected: selected,
+                      onSelected: (_) => ref
+                          .read(filterProvider.notifier)
+                          .toggleSubcategory(selectedCat, sub),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+
+            // ── 色（色対応カテゴリ選択時のみ表示） ────────────────────
+            if (showColor) ...[
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('色', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _filterColorPalette.map((c) {
+                    final hex      = c.$1;
+                    final name     = c.$2;
+                    final color    = _hexToColor(hex);
+                    final selected = filter.selectedColors.contains(hex);
+                    return Tooltip(
+                      message: name,
+                      child: GestureDetector(
+                        onTap: () =>
+                            ref.read(filterProvider.notifier).toggleColor(hex),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: selected
+                                ? Border.all(color: Colors.black87, width: 2.5)
+                                : Border.all(
+                                    color: Colors.grey.shade300, width: 1),
+                            boxShadow: selected
+                                ? [const BoxShadow(
+                                    blurRadius: 4,
+                                    color: Colors.black26,
+                                    offset: Offset(0, 2))]
+                                : null,
+                          ),
+                          child: selected
+                              ? Icon(Icons.check,
+                                  size: 16,
+                                  color: color.computeLuminance() > 0.5
+                                      ? Colors.black87
+                                      : Colors.white)
                               : null,
                         ),
-                        child: selected
-                            ? Icon(Icons.check,
-                                size: 16,
-                                color: color.computeLuminance() > 0.5
-                                    ? Colors.black87
-                                    : Colors.white)
-                            : null,
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
+            ],
 
             // ── 年 ───────────────────────────────────────────────────
             const Divider(),
@@ -260,78 +301,6 @@ class _PanelContent extends ConsumerWidget {
       ),
     );
   }
-
-  /// 選択中の大項目ごとに小項目チップをグループ表示するウィジェットリストを返す
-  List<Widget> _buildSubcategorySection(
-    FilterState filter, ColorScheme cs, WidgetRef ref,
-  ) {
-    if (filter.selectedCategories.isEmpty) return [];
-
-    final result = <Widget>[
-      const Divider(),
-      const Padding(
-        padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text('小項目', style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ),
-    ];
-
-    for (final cat in filter.selectedCategories) {
-      final subs = _categoryStatuses[cat] ?? const <String>[];
-      if (subs.isEmpty) continue;
-
-      final selectedSubs =
-          filter.selectedSubcategories[cat] ?? const <String>{};
-
-      // 大項目名をグループ見出しとして表示（左端のカラーバー付き）
-      result.add(Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
-        child: Row(
-          children: [
-            Container(
-              width: 3,
-              height: 14,
-              decoration: BoxDecoration(
-                color: cs.primary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _categoryLabel(cat),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: cs.primary,
-              ),
-            ),
-          ],
-        ),
-      ));
-
-      result.add(Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: subs.map((sub) {
-            final subSelected = selectedSubs.contains(sub);
-            return FilterChip(
-              label: Text(sub),
-              selected: subSelected,
-              onSelected: (_) => ref
-                  .read(filterProvider.notifier)
-                  .toggleSubcategory(cat, sub),
-            );
-          }).toList(),
-        ),
-      ));
-    }
-
-    return result;
-  }
 }
 
 String _categoryLabel(IconCategory category) {
@@ -367,10 +336,7 @@ String _formatMmDd(DateTime date) {
   return '${date.month}/${date.day}';
 }
 
-// ── 小項目・色フィルタ用ヘルパー ──────────────────────────────────────────────
-
 Color _hexToColor(String hex) => Color(int.parse('0xFF${hex.substring(1)}'));
-
 
 const _filterColorPalette = <(String, String)>[
   ('#E05353', '赤'),
@@ -390,11 +356,11 @@ const _categoryStatuses = <IconCategory, List<String>>{
   IconCategory.flower:     ['つぼみ', '五分咲き', '満開', '散り始め', '終り'],
   IconCategory.foliage:    ['序盤', '8割', '最盛期', '終り'],
   IconCategory.vegetation: ['草', '木', '巨木', '苔', '実'],
-  IconCategory.scenery:    ['山', '滝', '木道', '雪原', '雲', '空', '夜空', 'その他'],
+  IconCategory.scenery:    ['山', '滝', '川', '池・湖', '橋', '木道', '雪原', '雲', '空', '夜空', 'その他'],
   IconCategory.hut:        ['有人営業', '無人利用可', '利用不可', 'その他'],
   IconCategory.food:       ['山小屋グルメ', '自炊', 'その他'],
   IconCategory.water:      ['枯れ', '少ない', '水あり'],
   IconCategory.danger:     ['崩落', '通行不可', '通行注意', '雪渓'],
-  IconCategory.wildlife:   ['サル', 'シカ', 'クマ', 'イノシシ', 'カモシカ', 'ライチョウ', 'ヘビ', 'タヌキ', 'キツネ', 'その他'],
+  IconCategory.wildlife:   ['サル', 'シカ', 'クマ', 'イノシシ', 'カモシカ', 'ライチョウ', 'オコジョ', 'ヘビ', 'タヌキ', 'キツネ', 'その他'],
   IconCategory.other:      [],
 };

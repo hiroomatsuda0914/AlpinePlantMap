@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 野生動物 クマ - ドット絵詳細版 -->
+  <!-- 丸みのある頭・眉毛・3段階の耳 -->
+
+  <!-- 耳 (外, 上辺を1cell細めて角を丸く) -->
+  <rect x="5"  y="2"  width="6"  height="2"  fill="#795548"/>
+  <rect x="4"  y="4"  width="8"  height="6"  fill="#795548"/>
+  <rect x="21" y="2"  width="6"  height="2"  fill="#795548"/>
+  <rect x="20" y="4"  width="8"  height="6"  fill="#795548"/>
+
+  <!-- 耳 (中) -->
+  <rect x="6"  y="4"  width="4"  height="4"  fill="#D4A453"/>
+  <rect x="22" y="4"  width="4"  height="4"  fill="#D4A453"/>
+  <!-- 耳 (内ハイライト) -->
+  <rect x="7"  y="5"  width="2"  height="2"  fill="#E8C170"/>
+  <rect x="23" y="5"  width="2"  height="2"  fill="#E8C170"/>
+
+  <!-- 頭 (上下を1cell細めて角を丸く) -->
+  <rect x="6"  y="8"  width="20" height="2"  fill="#795548"/>
+  <rect x="4"  y="10" width="24" height="16" fill="#795548"/>
+  <rect x="6"  y="26" width="20" height="2"  fill="#795548"/>
+
+  <!-- 眉毛 -->
+  <rect x="8"  y="11" width="6"  height="2"  fill="#4E342E"/>
+  <rect x="18" y="11" width="6"  height="2"  fill="#4E342E"/>
+
+  <!-- 目 (基本版より少し大きく) -->
+  <rect x="8"  y="14" width="6"  height="4"  fill="#2E1503"/>
+  <rect x="18" y="14" width="6"  height="4"  fill="#2E1503"/>
+  <!-- 目の光沢 -->
+  <rect x="9"  y="15" width="2"  height="2"  fill="white"/>
+  <rect x="19" y="15" width="2"  height="2"  fill="white"/>
+
+  <!-- 鼻まわり -->
+  <rect x="10" y="19" width="12" height="8"  fill="#A0744E"/>
+
+  <!-- 鼻 (楕円っぽく) -->
+  <rect x="12" y="19" width="8"  height="2"  fill="#2E1503"/>
+  <rect x="11" y="21" width="10" height="2"  fill="#2E1503"/>
+  <rect x="12" y="23" width="8"  height="2"  fill="#2E1503"/>
+
+  <!-- 口 (W字型スマイル) -->
+  <rect x="11" y="25" width="4"  height="2"  fill="#2E1503"/>
+  <rect x="17" y="25" width="4"  height="2"  fill="#2E1503"/>
+  <rect x="15" y="24" width="2"  height="2"  fill="#2E1503"/>
+</svg>
